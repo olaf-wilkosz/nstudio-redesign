@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "posty_bloga",
+  "info": {
+    "singularName": "post-bloga",
+    "pluralName": "posty-bloga",
+    "displayName": "Post bloga",
+    "description": "Wpis na blogu Nstudio"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tytul": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "tytul",
+      "required": true
+    },
+    "zajawka": {
+      "type": "text"
+    },
+    "tresc": {
+      "type": "richtext",
+      "required": true
+    },
+    "data": {
+      "type": "date",
+      "required": true
+    },
+    "okladka": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    }
+  }
+}

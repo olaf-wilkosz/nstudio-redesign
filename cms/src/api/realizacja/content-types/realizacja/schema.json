@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "realizacje",
+  "info": {
+    "singularName": "realizacja",
+    "pluralName": "realizacje",
+    "displayName": "Realizacja",
+    "description": "Realizacja projektu wnetrz - prywatna lub komercyjna"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tytul": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "tytul",
+      "required": true
+    },
+    "opis": {
+      "type": "richtext"
+    },
+    "lokalizacja": {
+      "type": "string"
+    },
+    "kategoria": {
+      "type": "enumeration",
+      "enum": ["mieszkanie", "dom", "komercyjne"],
+      "required": true
+    },
+    "galeria": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "okladka": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "kolejnosc": {
+      "type": "integer"
+    }
+  }
+}

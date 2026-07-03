@@ -1,0 +1,52 @@
+{
+  "kind": "singleType",
+  "collectionName": "ustawienia",
+  "info": {
+    "singularName": "ustawienie",
+    "pluralName": "ustawienia",
+    "displayName": "Ustawienia",
+    "description": "Globalne dane kontaktowe i linki social media (singleton)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "telefon": {
+      "type": "string"
+    },
+    "telefonMeble": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "emailMeble": {
+      "type": "email"
+    },
+    "adres": {
+      "type": "text"
+    },
+    "godzinyOtwarcia": {
+      "type": "text"
+    },
+    "facebook": {
+      "type": "string"
+    },
+    "instagram": {
+      "type": "string"
+    },
+    "youtube": {
+      "type": "string"
+    },
+    "googleMaps": {
+      "type": "string"
+    },
+    "lat": {
+      "type": "decimal"
+    },
+    "lng": {
+      "type": "decimal"
+    }
+  }
+}
