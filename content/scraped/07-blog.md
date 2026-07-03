@@ -16,4 +16,4 @@ Pełna, skondensowana treść wpisu: patrz `08-blog-posts/wizualizacje-komputero
 
 ## Wniosek dla redesignu
 
-Sekcja blogowa jest praktycznie pusta / dopiero rozpoczęta. W nowej architekturze treści (Strapi) warto przewidzieć content type "Blog Post" gotowy do skalowania, ale nie ma dużego korpusu istniejących treści do migracji — tylko 1 artykuł.
+Strona działa od ok. 3 lat, ale blog był od uruchomienia praktycznie zaniedbany — to nie nowy blog, tylko niewykorzystany potencjał. Jednym z celów redesignu jest ułatwienie regularnego publikowania (prosty content type w Strapi, gotowy do skalowania), nie tylko przeniesienie istniejącej 1 treści.
