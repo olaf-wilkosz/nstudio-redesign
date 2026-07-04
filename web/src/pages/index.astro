@@ -7,6 +7,7 @@ import Button from '../components/Button.astro';
 import RealizacjeCarousel from '../components/RealizacjeCarousel.astro';
 import Hero3DPlaceholder from '../components/Hero3DPlaceholder.astro';
 import { getRealizacje, getUstawienia } from '../lib/strapi';
+import { withBase } from '../lib/url';
 
 const realizacje = await getRealizacje();
 const ustawienia = await getUstawienia();
@@ -65,8 +66,8 @@ const oferta = [
         charakter - od koncepcji po ostatni detal wykończenia.
       </p>
       <div class="mt-9 flex flex-wrap gap-4">
-        <Button href="/portfolio/" variant="primary">Zobacz realizacje</Button>
-        <Button href="/kontakt/" variant="outline-light">Umów konsultację</Button>
+        <Button href={withBase('/portfolio/')} variant="primary">Zobacz realizacje</Button>
+        <Button href={withBase('/kontakt/')} variant="outline-light">Umów konsultację</Button>
       </div>
     </Container>
   </section>
@@ -80,7 +81,7 @@ const oferta = [
       <p class="mt-6 text-sm tracking-[0.1em] text-muted uppercase">
         Natalia Osipa-Indycka, założycielka Nstudio
       </p>
-      <a href="/o-mnie/" class="mt-4 inline-block text-sm text-ink underline underline-offset-4 hover:text-primary-dark">
+      <a href={withBase('/o-mnie/')} class="mt-4 inline-block text-sm text-ink underline underline-offset-4 hover:text-primary-dark">
         Poznaj mnie →
       </a>
     </Container>
@@ -91,7 +92,7 @@ const oferta = [
     <Container class="mb-2">
       <div class="flex items-end justify-between">
         <h2 class="font-serif text-3xl text-ink md:text-4xl">Wybrane realizacje</h2>
-        <a href="/portfolio/" class="hidden text-sm text-muted hover:text-ink md:block">
+        <a href={withBase('/portfolio/')} class="hidden text-sm text-muted hover:text-ink md:block">
           Całe portfolio →
         </a>
       </div>
@@ -114,7 +115,7 @@ const oferta = [
           ))
         }
       </div>
-      <Button href="/oferta/" variant="outline-dark" class="mt-12">Zobacz pełną ofertę</Button>
+      <Button href={withBase('/oferta/')} variant="outline-dark" class="mt-12">Zobacz pełną ofertę</Button>
     </Container>
   </section>
 

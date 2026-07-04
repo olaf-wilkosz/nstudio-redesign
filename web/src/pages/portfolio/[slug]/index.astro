@@ -5,6 +5,7 @@ import Footer from '../../../components/Footer.astro';
 import Container from '../../../components/Container.astro';
 import Button from '../../../components/Button.astro';
 import { getRealizacje, getUstawienia, strapiMediaUrl } from '../../../lib/strapi';
+import { withBase } from '../../../lib/url';
 
 export async function getStaticPaths() {
   const realizacje = await getRealizacje();
@@ -34,7 +35,7 @@ const kategoriaLabel: Record<string, string> = {
 
   <section data-theme="light" class="bg-cream pt-40 pb-14 md:pt-48">
     <Container>
-      <a href="/portfolio/" class="text-xs tracking-[0.1em] text-muted uppercase hover:text-ink">
+      <a href={withBase('/portfolio/')} class="text-xs tracking-[0.1em] text-muted uppercase hover:text-ink">
         ← Portfolio
       </a>
       <div class="mt-5 flex flex-wrap items-end justify-between gap-4">
@@ -71,7 +72,7 @@ const kategoriaLabel: Record<string, string> = {
         <p class="max-w-md text-muted">
           Podoba Ci się ten kierunek? Porozmawiajmy o Twoim wnętrzu.
         </p>
-        <Button href="/kontakt/" variant="outline-dark">Umów konsultację</Button>
+        <Button href={withBase('/kontakt/')} variant="outline-dark">Umów konsultację</Button>
       </div>
     </Container>
   </section>

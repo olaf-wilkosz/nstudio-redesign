@@ -1,8 +1,10 @@
 ---
 import { getUstawienia } from '../lib/strapi';
+import { withBase } from '../lib/url';
 
 const ustawienia = await getUstawienia();
-const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const siteRoot = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const siteUrl = `${siteRoot}${withBase('/')}`;
 
 const sameAs = [ustawienia.facebook, ustawienia.instagram, ustawienia.youtube].filter(
   (v): v is string => Boolean(v)
@@ -15,7 +17,7 @@ const schema = {
   description:
     'Pracownia projektowania wnętrz w Rzeszowie - projekty kompleksowe, z nadzorem i realizacje pod klucz dla mieszkań, domów i przestrzeni komercyjnych.',
   url: siteUrl,
-  image: `${siteUrl}/images/og-default.jpg`,
+  image: `${siteRoot}${withBase('/images/og-default.jpg')}`,
   telephone: ustawienia.telefon ?? undefined,
   email: ustawienia.email ?? undefined,
   address: ustawienia.adres

@@ -1,0 +1,110 @@
+name: Deploy do GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Astro pobiera dane ze Strapi przez REST API w build-time (SSG). Docelowo
+      # posluzy do tego darmowy tier Strapi Cloud, ale na tym etapie (PoC, brak
+      # zewnetrznego hostingu CMS-a) odpalamy Strapi efemerycznie w tym samym
+      # jobie: instalujemy, seedujemy realna trescia (ten sam skrypt co lokalnie)
+      # i uruchamiamy tylko na czas builda Astro, w tle na localhost.
+      - name: Wygeneruj sekrety Strapi (efemeryczne, tylko na czas builda w CI)
+        working-directory: cms
+        run: |
+          cat > .env << EOF
+          HOST=0.0.0.0
+          PORT=1337
+          APP_KEYS=$(openssl rand -base64 16),$(openssl rand -base64 16)
+          API_TOKEN_SALT=$(openssl rand -base64 16)
+          ADMIN_JWT_SECRET=$(openssl rand -base64 16)
+          JWT_SECRET=$(openssl rand -base64 16)
+          TRANSFER_TOKEN_SALT=$(openssl rand -base64 16)
+          ENCRYPTION_KEY=$(openssl rand -base64 16)
+          DATABASE_CLIENT=sqlite
+          DATABASE_FILENAME=.tmp/data.db
+          EOF
+
+      - name: Zainstaluj zaleznosci Strapi
+        working-directory: cms
+        run: npm ci
+
+      - name: Zbuduj panel admina Strapi
+        working-directory: cms
+        run: npm run build
+
+      # Seed boots i zamyka wlasna, tymczasowa instancje Strapi na tej samej
+      # bazie SQLite - musi zakonczyc sie PRZED odpaleniem dlugo dzialajacego
+      # serwera ponizej, zeby dwa procesy nie probowaly pisac do tego samego
+      # pliku .tmp/data.db jednoczesnie.
+      - name: Zaseeduj Strapi realna trescia
+        working-directory: cms
+        run: npm run seed
+
+      - name: Uruchom Strapi w tle
+        working-directory: cms
+        run: npm run start &
+
+      - name: Zaczekaj az Strapi API bedzie gotowe
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:1337/api/realizacje > /dev/null; then
+              echo "Strapi API gotowe"
+              exit 0
+            fi
+            echo "Czekam na Strapi... ($i/30)"
+            sleep 2
+          done
+          echo "Strapi nie odpowiedzialo w czasie"
+          exit 1
+
+      - name: Zainstaluj zaleznosci Astro
+        working-directory: web
+        run: npm ci
+
+      - name: Zbuduj strone (Astro SSG)
+        working-directory: web
+        run: npm run build
+        env:
+          STRAPI_URL: http://localhost:1337
+
+      - name: Skonfiguruj GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Wgraj artefakt buildu
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Wdroz na GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -5,6 +5,7 @@ import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
 import Container from '../../../components/Container.astro';
 import { getPostyBloga, getUstawienia, strapiMediaUrl } from '../../../lib/strapi';
+import { withBase } from '../../../lib/url';
 
 export async function getStaticPaths() {
   const posty = await getPostyBloga();
@@ -32,7 +33,7 @@ const formatData = (iso: string) =>
 
   <section data-theme="light" class="bg-cream pt-40 pb-14 md:pt-48">
     <Container class="max-w-3xl">
-      <a href="/blog/" class="text-xs tracking-[0.1em] text-muted uppercase hover:text-ink">← Blog</a>
+      <a href={withBase('/blog/')} class="text-xs tracking-[0.1em] text-muted uppercase hover:text-ink">← Blog</a>
       <p class="mt-5 text-xs tracking-[0.1em] text-muted uppercase">{formatData(post.data)}</p>
       <h1 class="mt-2 font-serif text-4xl text-ink md:text-5xl">{post.tytul}</h1>
     </Container>

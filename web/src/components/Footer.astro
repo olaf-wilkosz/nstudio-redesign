@@ -1,6 +1,7 @@
 ---
 import Container from './Container.astro';
 import type { Ustawienia } from '../lib/strapi';
+import { withBase } from '../lib/url';
 
 interface Props {
   ustawienia: Ustawienia;
@@ -13,7 +14,7 @@ const year = new Date().getFullYear();
 <footer data-theme="dark" class="bg-ink text-cream">
   <Container class="grid gap-10 py-16 md:grid-cols-3">
     <div>
-      <img src="/logo/nstudio-logo-white.png" alt="Nstudio" class="h-14 w-14" />
+      <img src={withBase('/logo/nstudio-logo-white.png')} alt="Nstudio" class="h-14 w-14" />
       <p class="mt-3 max-w-xs text-sm text-cream/60">
         Pracownia projektowania wnętrz Natalii Osipy-Indyckiej. Rzeszów.
       </p>

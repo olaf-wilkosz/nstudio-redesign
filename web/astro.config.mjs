@@ -9,9 +9,11 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // Base path (subdomain path prefix for GH Pages) is added in step 7 once
-  // the deploy workflow lands - see krok 7 w README.
   site: 'https://olaf-wilkosz.github.io',
+  // GH Pages project site lives at <user>.github.io/nstudio-redesign, not at
+  // the domain root - every internal href/src must go through withBase()
+  // (src/lib/url.ts) to respect this in both dev and prod.
+  base: '/nstudio-redesign',
 
   vite: {
     plugins: [tailwindcss()]

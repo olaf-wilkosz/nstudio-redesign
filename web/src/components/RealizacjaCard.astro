@@ -1,6 +1,7 @@
 ---
 import type { Realizacja } from '../lib/strapi';
 import { strapiMediaUrl } from '../lib/strapi';
+import { withBase } from '../lib/url';
 
 interface Props {
   realizacja: Realizacja;
@@ -25,7 +26,7 @@ const kategoriaLabel: Record<string, string> = {
 ---
 
 <a
-  href={`/portfolio/${realizacja.slug}/`}
+  href={withBase(`/portfolio/${realizacja.slug}/`)}
   class="group mb-8 block break-inside-avoid"
   data-kategoria={realizacja.kategoria}
 >

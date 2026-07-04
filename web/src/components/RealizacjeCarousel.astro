@@ -1,6 +1,7 @@
 ---
 import type { Realizacja } from '../lib/strapi';
 import { strapiMediaUrl } from '../lib/strapi';
+import { withBase } from '../lib/url';
 
 interface Props {
   realizacje: Realizacja[];
@@ -21,7 +22,7 @@ const kategoriaLabel: Record<string, string> = {
       {
         realizacje.map((r) => (
           <div class="swiper-slide">
-            <a href={`/portfolio/${r.slug}/`} class="carousel-card">
+            <a href={withBase(`/portfolio/${r.slug}/`)} class="carousel-card">
               <div class="carousel-card-image">
                 {r.okladka && (
                   <img

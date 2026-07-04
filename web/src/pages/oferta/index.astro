@@ -6,6 +6,7 @@ import Container from '../../components/Container.astro';
 import Button from '../../components/Button.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import { getUstawienia } from '../../lib/strapi';
+import { withBase } from '../../lib/url';
 
 const ustawienia = await getUstawienia();
 
@@ -60,7 +61,7 @@ const elementy = [
 
   <section data-theme="light" class="bg-white">
     <div class="relative aspect-[16/7] w-full overflow-hidden">
-      <img src="/images/oferta/jadalnia.jpg" alt="Realizacja Nstudio - jadalnia" class="h-full w-full object-cover" />
+      <img src={withBase('/images/oferta/jadalnia.jpg')} alt="Realizacja Nstudio - jadalnia" class="h-full w-full object-cover" />
       <div class="absolute inset-0 bg-ink/25" />
       <Container class="absolute inset-0 flex items-end pb-10">
         <p class="max-w-xl font-serif text-2xl leading-snug text-cream md:text-3xl">
@@ -97,7 +98,7 @@ const elementy = [
   <section data-theme="light" class="bg-white pb-20">
     <Container class="grid items-center gap-14 md:grid-cols-2">
       <img
-        src="/images/oferta/dokumentacja-techniczna.jpg"
+        src={withBase('/images/oferta/dokumentacja-techniczna.jpg')}
         alt="Przykład rysunku technicznego z dokumentacji projektowej Nstudio"
         class="w-full border border-ink/10 object-cover"
       />
@@ -122,10 +123,10 @@ const elementy = [
         <p class="mt-8 font-serif text-xl leading-snug text-ink">
           Wycena ustalana jest indywidualnie po rozmowie o zakresie i charakterze projektu.
         </p>
-        <Button href="/kontakt/" variant="outline-dark" class="mt-8">Zapytaj o wycenę</Button>
+        <Button href={withBase('/kontakt/')} variant="outline-dark" class="mt-8">Zapytaj o wycenę</Button>
       </div>
       <img
-        src="/images/oferta/detal-kuchnia.jpg"
+        src={withBase('/images/oferta/detal-kuchnia.jpg')}
         alt="Detal kuchni z realizacji Nstudio - marmurowy blat i mosiężna armatura"
         class="aspect-[4/5] w-full object-cover"
       />

@@ -5,6 +5,7 @@ import Footer from '../../components/Footer.astro';
 import Container from '../../components/Container.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import { getPostyBloga, getUstawienia, strapiMediaUrl } from '../../lib/strapi';
+import { withBase } from '../../lib/url';
 
 const posty = await getPostyBloga();
 const ustawienia = await getUstawienia();
@@ -26,7 +27,7 @@ const formatData = (iso: string) =>
         ) : (
           <div class="grid gap-12 md:grid-cols-2">
             {posty.map((post) => (
-              <a href={`/blog/${post.slug}/`} class="group block">
+              <a href={withBase(`/blog/${post.slug}/`)} class="group block">
                 {post.okladka && (
                   <div class="aspect-[3/2] overflow-hidden bg-ink/5">
                     <img

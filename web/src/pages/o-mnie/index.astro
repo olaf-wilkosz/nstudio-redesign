@@ -6,6 +6,7 @@ import Container from '../../components/Container.astro';
 import Button from '../../components/Button.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import { getUstawienia } from '../../lib/strapi';
+import { withBase } from '../../lib/url';
 
 const ustawienia = await getUstawienia();
 ---
@@ -25,7 +26,7 @@ const ustawienia = await getUstawienia();
   <section data-theme="light" class="py-20">
     <Container class="grid gap-14 md:grid-cols-[minmax(0,340px)_1fr]">
       <img
-        src="/images/natalia-osipa-indycka.png"
+        src={withBase('/images/natalia-osipa-indycka.png')}
         alt="Natalia Osipa-Indycka, projektantka wnętrz"
         class="aspect-[4/5] w-full max-w-sm object-cover"
       />
@@ -49,8 +50,8 @@ const ustawienia = await getUstawienia();
           </p>
         </div>
         <div class="mt-10 flex flex-wrap gap-4">
-          <Button href="/portfolio/" variant="primary">Zobacz realizacje</Button>
-          <Button href="/kontakt/" variant="outline-dark">Umów konsultację</Button>
+          <Button href={withBase('/portfolio/')} variant="primary">Zobacz realizacje</Button>
+          <Button href={withBase('/kontakt/')} variant="outline-dark">Umów konsultację</Button>
         </div>
       </div>
     </Container>
