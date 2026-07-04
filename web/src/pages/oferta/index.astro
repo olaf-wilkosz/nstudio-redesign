@@ -1,0 +1,109 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Container from '../../components/Container.astro';
+import Button from '../../components/Button.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { getUstawienia } from '../../lib/strapi';
+
+const ustawienia = await getUstawienia();
+
+const pakiety = [
+  {
+    tytul: 'Projekt kompleksowy wnętrz',
+    opis: 'Dostępny zdalnie i stacjonarnie - obsługa klientów w całej Polsce i za granicą.',
+    zakres: [
+      'Rzuty funkcjonalne 2D',
+      'Wstępne wizualizacje',
+      'Pełna dokumentacja techniczna: rysunki w skali, przekroje, plany oświetlenia',
+      'Finalne wizualizacje, opisy techniczne i listy materiałowe',
+      'Zestawienia wyposażenia i przewodnik zakupowy',
+    ],
+  },
+  {
+    tytul: 'Projekt z nadzorem',
+    opis: 'Dla klientów potrzebujących wsparcia na etapie realizacji. Zawiera wszystko z pakietu kompleksowego, plus:',
+    zakres: [
+      'Konsultacje w sklepach przy doborze materiałów',
+      'Kosztorysy od specjalistów',
+      'Konsultacje z wykonawcami',
+      '3 wizyty na budowie w celu weryfikacji jakości wykonania',
+    ],
+  },
+  {
+    tytul: 'Pakiet Pod Klucz',
+    opis: 'Dostępny w Rzeszowie, Tarnowie, Krakowie, Zakopanem, Stalowej Woli i okolicach. Zawiera projekt i nadzór, plus:',
+    zakres: [
+      'Zarządzanie projektem i koordynacja zamówień',
+      'Monitorowanie harmonogramu prac',
+      'Bezpośredni kontakt z wykonawcami',
+      'Dobór elementów dekoracyjnych (poduszki, donice, ramki)',
+    ],
+  },
+];
+
+const elementy = [
+  'Funkcjonalność wnętrza',
+  'Harmonia kolorystyczna',
+  'Oświetlenie pomieszczeń',
+  'Dobór materiałów',
+  'Osobiste akcenty',
+  'Trendy a indywidualizm',
+];
+---
+
+<Layout title="Oferta" description="Trzy pakiety współpracy z pracownią Nstudio - projekt kompleksowy, z nadzorem i pod klucz.">
+  <Header />
+
+  <PageHeader
+    eyebrow="Oferta"
+    title="Jak możemy współpracować"
+    subtitle="Projektowanie wnętrz to nie tylko zawód, ale przede wszystkim pasja i sztuka. Wybierz zakres współpracy dopasowany do Twoich potrzeb."
+  />
+
+  <section data-theme="light" class="bg-white py-20">
+    <Container>
+      <div class="grid gap-10 md:grid-cols-3">
+        {
+          pakiety.map((p, i) => (
+            <div class="border-t border-ink/15 pt-6">
+              <span class="font-serif text-sm text-primary-dark">0{i + 1}</span>
+              <h2 class="mt-2 font-serif text-2xl text-ink">{p.tytul}</h2>
+              <p class="mt-3 text-sm text-muted">{p.opis}</p>
+              <ul class="mt-5 space-y-2 text-sm text-body/90">
+                {p.zakres.map((z) => (
+                  <li class="flex gap-2">
+                    <span class="text-primary-dark">·</span>
+                    <span>{z}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section data-theme="light" class="py-20">
+    <Container class="grid gap-14 md:grid-cols-2">
+      <div>
+        <h2 class="font-serif text-2xl text-ink md:text-3xl">Na co zwracamy uwagę</h2>
+        <ul class="mt-6 grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-body/90">
+          {elementy.map((e) => <li>— {e}</li>)}
+        </ul>
+      </div>
+      <div class="flex flex-col justify-between border-t border-ink/15 pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-14">
+        <p class="font-serif text-xl leading-snug text-ink">
+          Wycena ustalana jest indywidualnie po rozmowie o zakresie i charakterze projektu.
+        </p>
+        <Button href="/kontakt/" variant="outline-dark" class="mt-8 self-start">
+          Zapytaj o wycenę
+        </Button>
+      </div>
+    </Container>
+  </section>
+
+  <Footer ustawienia={ustawienia} />
+</Layout>

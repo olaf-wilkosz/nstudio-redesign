@@ -1,0 +1,70 @@
+---
+import { marked } from 'marked';
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import Container from '../../../components/Container.astro';
+import { getPostyBloga, getUstawienia, strapiMediaUrl } from '../../../lib/strapi';
+
+export async function getStaticPaths() {
+  const posty = await getPostyBloga();
+  return posty.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const ustawienia = await getUstawienia();
+const tresc = await marked.parse(post.tresc);
+
+const formatData = (iso: string) =>
+  new Date(iso).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<Layout title={post.tytul} description={post.zajawka ?? post.tytul}>
+  <Header />
+
+  <section data-theme="light" class="bg-cream pt-40 pb-14 md:pt-48">
+    <Container class="max-w-3xl">
+      <a href="/blog/" class="text-xs tracking-[0.1em] text-muted uppercase hover:text-ink">← Blog</a>
+      <p class="mt-5 text-xs tracking-[0.1em] text-muted uppercase">{formatData(post.data)}</p>
+      <h1 class="mt-2 font-serif text-4xl text-ink md:text-5xl">{post.tytul}</h1>
+    </Container>
+  </section>
+
+  {
+    post.okladka && (
+      <div class="bg-white">
+        <Container class="max-w-3xl py-10">
+          <img
+            src={strapiMediaUrl(post.okladka.url)}
+            alt={post.okladka.alternativeText ?? post.tytul}
+            class="w-full object-cover"
+          />
+        </Container>
+      </div>
+    )
+  }
+
+  <section data-theme="light" class="bg-white pb-24">
+    <Container class="max-w-3xl">
+      <div class="prose-nstudio" set:html={tresc} />
+    </Container>
+  </section>
+
+  <Footer ustawienia={ustawienia} />
+</Layout>
+
+<style>
+  .prose-nstudio :global(p) {
+    margin-bottom: 1.25rem;
+    color: rgba(43, 33, 22, 0.9);
+    line-height: 1.75;
+  }
+
+  .prose-nstudio :global(strong) {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+</style>

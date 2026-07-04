@@ -1,0 +1,84 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Container from '../../components/Container.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { getUstawienia } from '../../lib/strapi';
+
+const ustawienia = await getUstawienia();
+const mapSrc =
+  ustawienia.lat && ustawienia.lng
+    ? `https://www.google.com/maps?q=${ustawienia.lat},${ustawienia.lng}&z=15&output=embed`
+    : null;
+---
+
+<Layout title="Kontakt" description="Skontaktuj się z pracownią Nstudio w Rzeszowie.">
+  <Header />
+
+  <PageHeader
+    eyebrow="Kontakt"
+    title="Porozmawiajmy o Twoim wnętrzu"
+    subtitle="Napisz, zadzwoń albo odwiedź biuro w Rzeszowie - odpowiadamy na wszystkie zapytania osobiście."
+  />
+
+  <section data-theme="light" class="bg-white py-20">
+    <Container class="grid gap-14 md:grid-cols-2">
+      <div class="space-y-8">
+        <div>
+          <p class="text-xs tracking-[0.14em] text-muted uppercase">Projektowanie wnętrz</p>
+          {ustawienia.telefon && (
+            <a href={`tel:${ustawienia.telefon.replace(/\s/g, '')}`} class="mt-1 block font-serif text-2xl text-ink hover:text-primary-dark">
+              {ustawienia.telefon}
+            </a>
+          )}
+          {ustawienia.email && (
+            <a href={`mailto:${ustawienia.email}`} class="text-body/80 hover:text-ink">
+              {ustawienia.email}
+            </a>
+          )}
+        </div>
+
+        {ustawienia.telefonMeble && (
+          <div>
+            <p class="text-xs tracking-[0.14em] text-muted uppercase">Meble na wymiar</p>
+            <a href={`tel:${ustawienia.telefonMeble.replace(/\s/g, '')}`} class="mt-1 block font-serif text-2xl text-ink hover:text-primary-dark">
+              {ustawienia.telefonMeble}
+            </a>
+            {ustawienia.emailMeble && (
+              <a href={`mailto:${ustawienia.emailMeble}`} class="text-body/80 hover:text-ink">
+                {ustawienia.emailMeble}
+              </a>
+            )}
+          </div>
+        )}
+
+        {ustawienia.adres && (
+          <div>
+            <p class="text-xs tracking-[0.14em] text-muted uppercase">Biuro</p>
+            <p class="mt-1 max-w-xs text-body/90">{ustawienia.adres}</p>
+          </div>
+        )}
+
+        <div class="flex gap-5 pt-2 text-sm text-muted">
+          {ustawienia.instagram && <a href={ustawienia.instagram} class="hover:text-ink">Instagram</a>}
+          {ustawienia.facebook && <a href={ustawienia.facebook} class="hover:text-ink">Facebook</a>}
+        </div>
+      </div>
+
+      {
+        mapSrc && (
+          <iframe
+            src={mapSrc}
+            class="min-h-[360px] w-full border-0"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Lokalizacja biura Nstudio na mapie"
+          />
+        )
+      }
+    </Container>
+  </section>
+
+  <Footer ustawienia={ustawienia} />
+</Layout>

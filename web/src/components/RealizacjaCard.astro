@@ -4,8 +4,8 @@ import { strapiMediaUrl } from '../lib/strapi';
 
 interface Props {
   realizacja: Realizacja;
-  /** Controls the card's aspect ratio - varying it across a grid avoids a uniform, generic look. */
-  aspect?: 'square' | 'portrait' | 'landscape';
+  /** Controls the card's aspect ratio - 'auto' keeps the image's natural ratio (used for masonry layouts). */
+  aspect?: 'square' | 'portrait' | 'landscape' | 'auto';
 }
 
 const { realizacja, aspect = 'square' } = Astro.props;
@@ -14,6 +14,7 @@ const aspectClass = {
   square: 'aspect-[4/5]',
   portrait: 'aspect-[3/4]',
   landscape: 'aspect-[4/3]',
+  auto: '',
 }[aspect];
 
 const kategoriaLabel: Record<string, string> = {
@@ -23,7 +24,11 @@ const kategoriaLabel: Record<string, string> = {
 };
 ---
 
-<a href={`/portfolio/${realizacja.slug}/`} class="group block">
+<a
+  href={`/portfolio/${realizacja.slug}/`}
+  class="group mb-8 block break-inside-avoid"
+  data-kategoria={realizacja.kategoria}
+>
   <div class={`relative overflow-hidden bg-ink/5 ${aspectClass}`}>
     {
       realizacja.okladka && (

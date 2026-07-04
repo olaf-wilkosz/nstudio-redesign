@@ -1,0 +1,19 @@
+---
+import Container from './Container.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+}
+
+const { eyebrow, title, subtitle } = Astro.props;
+---
+
+<section data-theme="light" class="bg-cream pt-40 pb-16 md:pt-48 md:pb-20">
+  <Container>
+    {eyebrow && <p class="mb-4 text-xs tracking-[0.2em] text-primary-dark uppercase">{eyebrow}</p>}
+    <h1 class="max-w-2xl font-serif text-4xl text-ink md:text-5xl">{title}</h1>
+    {subtitle && <p class="mt-5 max-w-xl text-muted">{subtitle}</p>}
+  </Container>
+</section>

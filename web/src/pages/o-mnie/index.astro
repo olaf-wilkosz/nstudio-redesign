@@ -1,0 +1,79 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Container from '../../components/Container.astro';
+import Button from '../../components/Button.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { getUstawienia } from '../../lib/strapi';
+
+const ustawienia = await getUstawienia();
+---
+
+<Layout
+  title="O mnie"
+  description="Natalia Osipa-Indycka - projektantka wnętrz i mebli, założycielka pracowni Nstudio w Rzeszowie."
+>
+  <Header />
+
+  <PageHeader
+    eyebrow="O mnie"
+    title="Natalia Osipa-Indycka"
+    subtitle="Projektantka wnętrz i mebli, założycielka pracowni Nstudio w Rzeszowie."
+  />
+
+  <section data-theme="light" class="py-20">
+    <Container class="grid gap-14 md:grid-cols-[minmax(0,340px)_1fr]">
+      <img
+        src="/images/natalia-osipa-indycka.png"
+        alt="Natalia Osipa-Indycka, projektantka wnętrz"
+        class="aspect-[4/5] w-full max-w-sm object-cover"
+      />
+      <div>
+        <p class="font-serif text-2xl leading-snug text-ink md:text-3xl">
+          „Wierzę, że wnętrze jest odzwierciedleniem duszy mieszkańców.”
+        </p>
+        <div class="mt-8 space-y-5 text-body/90">
+          <p>
+            Nazywam się Natalia Osipa-Indycka, jestem projektantką wnętrz i mebli. Od 5 lat
+            prowadzę własne biuro projektowe Nstudio w Rzeszowie.
+          </p>
+          <p>
+            Pomagam klientom określić styl wnętrza, rozwiązuję problemy funkcjonalnego
+            rozplanowania przestrzeni i tworzę unikalne projekty wnętrz i mebli - zarówno dla
+            klientów indywidualnych, jak i firm. Mam na koncie ponad 50 zrealizowanych projektów.
+          </p>
+          <p>
+            Prywatnie - szczęśliwa żona, mama i właścicielka pieska, która uwielbia marzyć, a w
+            wolnym czasie tworzyć obrazy z gipsu.
+          </p>
+        </div>
+        <div class="mt-10 flex flex-wrap gap-4">
+          <Button href="/portfolio/" variant="primary">Zobacz realizacje</Button>
+          <Button href="/kontakt/" variant="outline-dark">Umów konsultację</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <section data-theme="light" class="bg-white py-20">
+    <Container class="grid gap-10 md:grid-cols-3">
+      <div>
+        <span class="font-serif text-4xl text-primary-dark">50+</span>
+        <p class="mt-2 text-sm text-muted">zrealizowanych projektów wnętrz</p>
+      </div>
+      <div>
+        <span class="font-serif text-4xl text-primary-dark">5</span>
+        <p class="mt-2 text-sm text-muted">lat doświadczenia na własnej działalności</p>
+      </div>
+      <div>
+        <span class="font-serif text-4xl text-primary-dark">3</span>
+        <p class="mt-2 text-sm text-muted">
+          etapy współpracy - projektant, wykonawca, meble na wymiar
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <Footer ustawienia={ustawienia} />
+</Layout>

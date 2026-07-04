@@ -1,0 +1,78 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import Container from '../../../components/Container.astro';
+import Button from '../../../components/Button.astro';
+import { getRealizacje, getUstawienia, strapiMediaUrl } from '../../../lib/strapi';
+
+export async function getStaticPaths() {
+  const realizacje = await getRealizacje();
+  return realizacje.map((r) => ({
+    params: { slug: r.slug },
+    props: { realizacja: r },
+  }));
+}
+
+const { realizacja } = Astro.props;
+const ustawienia = await getUstawienia();
+
+const kategoriaLabel: Record<string, string> = {
+  mieszkanie: 'Mieszkanie',
+  dom: 'Dom',
+  komercyjne: 'Komercyjne',
+};
+---
+
+<Layout
+  title={realizacja.tytul}
+  description={realizacja.opis ?? `Realizacja Nstudio - ${realizacja.tytul}.`}
+>
+  <Header />
+
+  <section data-theme="light" class="bg-cream pt-40 pb-14 md:pt-48">
+    <Container>
+      <a href="/portfolio/" class="text-xs tracking-[0.1em] text-muted uppercase hover:text-ink">
+        ← Portfolio
+      </a>
+      <div class="mt-5 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="mb-3 text-xs tracking-[0.2em] text-primary-dark uppercase">
+            {kategoriaLabel[realizacja.kategoria]}
+            {realizacja.lokalizacja && ` · ${realizacja.lokalizacja}`}
+          </p>
+          <h1 class="max-w-2xl font-serif text-4xl text-ink md:text-5xl">{realizacja.tytul}</h1>
+        </div>
+      </div>
+      {realizacja.opis && <p class="mt-6 max-w-2xl text-body/90">{realizacja.opis}</p>}
+    </Container>
+  </section>
+
+  <section data-theme="light" class="bg-white py-16">
+    <Container>
+      <div class="columns-1 gap-6 sm:columns-2 lg:columns-3">
+        {
+          realizacja.galeria.map((img) => (
+            <div class="mb-6 break-inside-avoid overflow-hidden">
+              <img
+                src={strapiMediaUrl(img.url)}
+                alt={img.alternativeText ?? `Realizacja Nstudio - ${realizacja.tytul}`}
+                loading="lazy"
+                class="w-full object-cover"
+              />
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="mt-16 flex flex-wrap items-center justify-between gap-6 border-t border-ink/10 pt-10">
+        <p class="max-w-md text-muted">
+          Podoba Ci się ten kierunek? Porozmawiajmy o Twoim wnętrzu.
+        </p>
+        <Button href="/kontakt/" variant="outline-dark">Umów konsultację</Button>
+      </div>
+    </Container>
+  </section>
+
+  <Footer ustawienia={ustawienia} />
+</Layout>

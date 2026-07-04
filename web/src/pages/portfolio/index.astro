@@ -1,0 +1,69 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Container from '../../components/Container.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import RealizacjaCard from '../../components/RealizacjaCard.astro';
+import { getRealizacje, getUstawienia } from '../../lib/strapi';
+
+const realizacje = await getRealizacje();
+const ustawienia = await getUstawienia();
+
+const filters = [
+  { value: 'wszystkie', label: 'Wszystkie' },
+  { value: 'mieszkanie', label: 'Mieszkania' },
+  { value: 'dom', label: 'Domy' },
+  { value: 'komercyjne', label: 'Komercyjne' },
+];
+---
+
+<Layout title="Portfolio" description="Portfolio realizacji pracowni Nstudio - mieszkania, domy i wnętrza komercyjne.">
+  <Header />
+
+  <PageHeader
+    eyebrow="Portfolio"
+    title="Realizacje"
+    subtitle="Ponad 20 zrealizowanych projektów wnętrz - mieszkania, domy i przestrzenie komercyjne."
+  />
+
+  <section data-theme="light" class="bg-white pb-24">
+    <Container>
+      <div class="mb-10 flex flex-wrap gap-3" id="portfolio-filters">
+        {
+          filters.map((f) => (
+            <button
+              class="filter-btn border border-ink/15 px-4 py-2 text-xs tracking-[0.1em] text-body uppercase transition-colors data-[active=true]:border-ink data-[active=true]:bg-ink data-[active=true]:text-cream"
+              data-filter={f.value}
+              data-active={f.value === 'wszystkie'}
+            >
+              {f.label}
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="columns-1 gap-8 sm:columns-2 lg:columns-3" id="portfolio-grid">
+        {realizacje.map((r) => <RealizacjaCard realizacja={r} aspect="auto" />)}
+      </div>
+    </Container>
+  </section>
+
+  <Footer ustawienia={ustawienia} />
+</Layout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const cards = document.querySelectorAll<HTMLElement>('#portfolio-grid > [data-kategoria]');
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      buttons.forEach((b) => (b.dataset.active = String(b === btn)));
+      cards.forEach((card) => {
+        const show = filter === 'wszystkie' || card.dataset.kategoria === filter;
+        card.style.display = show ? '' : 'none';
+      });
+    });
+  });
+</script>
