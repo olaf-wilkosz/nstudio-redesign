@@ -15,40 +15,57 @@ const kategoriaLabel: Record<string, string> = {
 };
 ---
 
-<div class="realizacje-swiper swiper">
-  <div class="swiper-wrapper">
-    {
-      realizacje.map((r) => (
-        <div class="swiper-slide">
-          <a href={`/portfolio/${r.slug}/`} class="carousel-card">
-            <div class="carousel-card-image">
-              {r.okladka && (
-                <img
-                  src={strapiMediaUrl(r.okladka.url)}
-                  alt={r.okladka.alternativeText ?? `Realizacja Nstudio - ${r.tytul}`}
-                  loading="lazy"
-                />
-              )}
-              <span class="carousel-badge">{kategoriaLabel[r.kategoria]}</span>
-            </div>
-            <p class="carousel-title">{r.tytul}</p>
-            {r.lokalizacja && <p class="carousel-location">{r.lokalizacja}</p>}
-          </a>
-        </div>
-      ))
-    }
+<div class="carousel-wrap">
+  <div class="realizacje-swiper swiper">
+    <div class="swiper-wrapper">
+      {
+        realizacje.map((r) => (
+          <div class="swiper-slide">
+            <a href={`/portfolio/${r.slug}/`} class="carousel-card">
+              <div class="carousel-card-image">
+                {r.okladka && (
+                  <img
+                    src={strapiMediaUrl(r.okladka.url)}
+                    alt={r.okladka.alternativeText ?? `Realizacja Nstudio - ${r.tytul}`}
+                  />
+                )}
+                <span class="carousel-badge">{kategoriaLabel[r.kategoria]}</span>
+              </div>
+              <p class="carousel-title">{r.tytul}</p>
+              {r.lokalizacja && <p class="carousel-location">{r.lokalizacja}</p>}
+            </a>
+          </div>
+        ))
+      }
+    </div>
   </div>
-  <button class="carousel-nav prev" aria-label="Poprzednia realizacja">‹</button>
-  <button class="carousel-nav next" aria-label="Następna realizacja">›</button>
+  <div class="carousel-nav-frame">
+    <button class="carousel-nav prev" aria-label="Poprzednia realizacja">‹</button>
+    <button class="carousel-nav next" aria-label="Następna realizacja">›</button>
+  </div>
 </div>
 
 <style>
+  .carousel-wrap {
+    position: relative;
+  }
+
   .realizacje-swiper {
     padding: 2.5rem 0 3rem;
   }
 
   .swiper-slide {
     width: clamp(230px, 26vw, 340px);
+    opacity: 0.5;
+    transition: opacity 0.25s ease;
+  }
+
+  .swiper-slide:hover {
+    opacity: 1 !important;
+  }
+
+  .swiper-slide-active {
+    opacity: 1;
   }
 
   .carousel-card {
@@ -92,44 +109,57 @@ const kategoriaLabel: Record<string, string> = {
     color: var(--color-muted);
   }
 
+  /* Bounds nav arrows to the page's content width (matches Container's
+     max-w-6xl) instead of the full-bleed carousel track, so on ultrawide
+     monitors they sit near the visible content instead of far off at the
+     viewport edges. */
+  .carousel-nav-frame {
+    position: absolute;
+    inset: 0;
+    max-width: 72rem;
+    margin-inline: auto;
+    pointer-events: none;
+  }
+
   .carousel-nav {
     position: absolute;
     top: 42%;
     z-index: 10;
     display: flex;
-    height: 3rem;
-    width: 3rem;
+    height: 3.25rem;
+    width: 3.25rem;
     align-items: center;
     justify-content: center;
     border-radius: 9999px;
-    background: rgba(245, 241, 236, 0.9);
+    background: rgba(245, 241, 236, 0.95);
     color: var(--color-ink);
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     line-height: 1;
-    box-shadow: 0 8px 24px rgba(29, 29, 29, 0.12);
+    box-shadow: 0 8px 24px rgba(29, 29, 29, 0.15);
+    pointer-events: auto;
     transition:
       opacity 0.3s ease,
       transform 0.2s ease;
   }
 
   .carousel-nav:hover {
-    transform: translateY(-50%) scale(1.06);
+    transform: scale(1.08);
   }
 
   .carousel-nav.prev {
-    left: 0.5rem;
+    left: -0.5rem;
   }
 
   .carousel-nav.next {
-    right: 0.5rem;
+    right: -0.5rem;
   }
 
   @media (min-width: 768px) {
     .carousel-nav.prev {
-      left: 2rem;
+      left: -1.5rem;
     }
     .carousel-nav.next {
-      right: 2rem;
+      right: -1.5rem;
     }
   }
 </style>
@@ -141,20 +171,21 @@ const kategoriaLabel: Record<string, string> = {
   import 'swiper/css/effect-coverflow';
 
   document.querySelectorAll<HTMLElement>('.realizacje-swiper').forEach((el) => {
-    const container = el.parentElement!;
-    const swiper = new Swiper(el, {
+    const wrap = el.closest('.carousel-wrap')!;
+    new Swiper(el, {
       modules: [EffectCoverflow, Autoplay, Navigation],
       effect: 'coverflow',
       centeredSlides: true,
       slidesPerView: 'auto',
+      spaceBetween: 40,
       loop: true,
       speed: 600,
       grabCursor: true,
       coverflowEffect: {
         rotate: 0,
         stretch: 0,
-        depth: 220,
-        modifier: 1.3,
+        depth: 100,
+        modifier: 1,
         slideShadows: false,
       },
       autoplay: {
@@ -163,16 +194,8 @@ const kategoriaLabel: Record<string, string> = {
         pauseOnMouseEnter: true,
       },
       navigation: {
-        nextEl: container.querySelector('.carousel-nav.next'),
-        prevEl: container.querySelector('.carousel-nav.prev'),
-      },
-      on: {
-        progress(swiper) {
-          swiper.slides.forEach((slideEl) => {
-            const p = Math.min(Math.abs((slideEl as unknown as { progress: number }).progress), 1);
-            (slideEl as HTMLElement).style.opacity = String(1 - p * 0.6);
-          });
-        },
+        nextEl: wrap.querySelector('.carousel-nav.next'),
+        prevEl: wrap.querySelector('.carousel-nav.prev'),
       },
     });
   });
