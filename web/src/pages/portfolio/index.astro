@@ -27,7 +27,7 @@ const filters = [
     subtitle="Ponad 20 zrealizowanych projektów wnętrz - mieszkania, domy i przestrzenie komercyjne."
   />
 
-  <section data-theme="light" class="bg-white pb-24">
+  <section data-theme="light" class="bg-white pt-16 pb-24">
     <Container>
       <div class="mb-10 flex flex-wrap gap-3" id="portfolio-filters">
         {
@@ -55,6 +55,23 @@ const filters = [
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
   const cards = document.querySelectorAll<HTMLElement>('#portfolio-grid > [data-kategoria]');
+  const grid = document.getElementById('portfolio-grid');
+
+  function baseColumnsForViewport() {
+    if (window.matchMedia('(min-width: 1024px)').matches) return 3;
+    if (window.matchMedia('(min-width: 640px)').matches) return 2;
+    return 1;
+  }
+
+  // A masonry grid with very few items in one column looks unbalanced (empty
+  // trailing gap) - cap the column count to the number of visible items so a
+  // filtered view of e.g. 2 "domy" renders as a clean 2-column layout instead
+  // of a mostly-empty 3rd column.
+  function updateColumns() {
+    const visibleCount = Array.from(cards).filter((c) => c.style.display !== 'none').length;
+    const cols = Math.max(1, Math.min(baseColumnsForViewport(), visibleCount));
+    grid!.style.columnCount = String(cols);
+  }
 
   buttons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -64,6 +81,10 @@ const filters = [
         const show = filter === 'wszystkie' || card.dataset.kategoria === filter;
         card.style.display = show ? '' : 'none';
       });
+      updateColumns();
     });
   });
+
+  window.addEventListener('resize', updateColumns);
+  updateColumns();
 </script>

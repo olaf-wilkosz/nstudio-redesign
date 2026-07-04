@@ -56,11 +56,19 @@ const elementy = [
 <Layout title="Oferta" description="Trzy pakiety współpracy z pracownią Nstudio - projekt kompleksowy, z nadzorem i pod klucz.">
   <Header />
 
-  <PageHeader
-    eyebrow="Oferta"
-    title="Jak możemy współpracować"
-    subtitle="Projektowanie wnętrz to nie tylko zawód, ale przede wszystkim pasja i sztuka. Wybierz zakres współpracy dopasowany do Twoich potrzeb."
-  />
+  <PageHeader eyebrow="Oferta" title="Jak możemy współpracować" />
+
+  <section data-theme="light" class="bg-white">
+    <div class="relative aspect-[16/7] w-full overflow-hidden">
+      <img src="/images/oferta/jadalnia.jpg" alt="Realizacja Nstudio - jadalnia" class="h-full w-full object-cover" />
+      <div class="absolute inset-0 bg-ink/25" />
+      <Container class="absolute inset-0 flex items-end pb-10">
+        <p class="max-w-xl font-serif text-2xl leading-snug text-cream md:text-3xl">
+          „Projektowanie wnętrz to nie tylko zawód, ale przede wszystkim pasja i sztuka.”
+        </p>
+      </Container>
+    </div>
+  </section>
 
   <section data-theme="light" class="bg-white py-20">
     <Container>
@@ -79,6 +87,18 @@ const elementy = [
                   </li>
                 ))}
               </ul>
+              {i === 0 && (
+                <figure class="mt-6">
+                  <img
+                    src="/images/oferta/dokumentacja-techniczna.jpg"
+                    alt="Przykład rysunku technicznego z dokumentacji projektowej Nstudio"
+                    class="w-full border border-ink/10 object-cover"
+                  />
+                  <figcaption class="mt-2 text-xs text-muted">
+                    Przykład dokumentacji technicznej - rzut funkcjonalny
+                  </figcaption>
+                </figure>
+              )}
             </div>
           ))
         }
@@ -87,21 +107,22 @@ const elementy = [
   </section>
 
   <section data-theme="light" class="py-20">
-    <Container class="grid gap-14 md:grid-cols-2">
+    <Container class="grid items-center gap-14 md:grid-cols-2">
       <div>
         <h2 class="font-serif text-2xl text-ink md:text-3xl">Na co zwracamy uwagę</h2>
         <ul class="mt-6 grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-body/90">
           {elementy.map((e) => <li>— {e}</li>)}
         </ul>
-      </div>
-      <div class="flex flex-col justify-between border-t border-ink/15 pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-14">
-        <p class="font-serif text-xl leading-snug text-ink">
+        <p class="mt-8 font-serif text-xl leading-snug text-ink">
           Wycena ustalana jest indywidualnie po rozmowie o zakresie i charakterze projektu.
         </p>
-        <Button href="/kontakt/" variant="outline-dark" class="mt-8 self-start">
-          Zapytaj o wycenę
-        </Button>
+        <Button href="/kontakt/" variant="outline-dark" class="mt-8">Zapytaj o wycenę</Button>
       </div>
+      <img
+        src="/images/oferta/detal-kuchnia.jpg"
+        alt="Detal kuchni z realizacji Nstudio - marmurowy blat i mosiężna armatura"
+        class="aspect-[4/5] w-full object-cover"
+      />
     </Container>
   </section>
 

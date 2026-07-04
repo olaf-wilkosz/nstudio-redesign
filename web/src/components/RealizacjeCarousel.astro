@@ -57,15 +57,20 @@ const kategoriaLabel: Record<string, string> = {
   .swiper-slide {
     width: clamp(230px, 26vw, 340px);
     opacity: 0.5;
-    transition: opacity 0.25s ease;
+    filter: grayscale(0.85);
+    transition:
+      opacity 0.35s ease,
+      filter 0.35s ease;
   }
 
   .swiper-slide:hover {
     opacity: 1 !important;
+    filter: grayscale(0) !important;
   }
 
   .swiper-slide-active {
     opacity: 1;
+    filter: grayscale(0);
   }
 
   .carousel-card {
@@ -83,6 +88,11 @@ const kategoriaLabel: Record<string, string> = {
     height: 100%;
     width: 100%;
     object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .swiper-slide:hover .carousel-card-image img {
+    transform: scale(1.06);
   }
 
   .carousel-badge {
@@ -177,14 +187,18 @@ const kategoriaLabel: Record<string, string> = {
       effect: 'coverflow',
       centeredSlides: true,
       slidesPerView: 'auto',
-      spaceBetween: 40,
+      spaceBetween: 56,
       loop: true,
+      loopAdditionalSlides: 4,
       speed: 600,
       grabCursor: true,
       coverflowEffect: {
         rotate: 0,
-        stretch: 0,
-        depth: 100,
+        // 'stretch' adds real pixel spacing that grows with distance from the
+        // active slide, compensating for the perspective foreshortening that
+        // otherwise makes side slides visually overlap as they're pushed back.
+        stretch: 40,
+        depth: 80,
         modifier: 1,
         slideShadows: false,
       },
