@@ -1,0 +1,22 @@
+---
+/**
+ * PoC placeholder for the hero background. Currently renders a lightweight
+ * WebGL noise-gradient shader (HeroShader.tsx) as a Preact island with
+ * `client:visible`, so it hydrates only once the hero scrolls into view and
+ * never blocks the first paint or the text content above it.
+ *
+ * --- Docelowa rozbudowa (nie implementowana w tym PoC) ---
+ * To jest punkt rozbudowy do pełnej sceny 3D (Three.js), pokazującej wnętrze
+ * z realnym efektem głębi: kamera patrząca w głąb pomieszczenia, element
+ * (np. firana, roślina, fragment mebla) przelatujący "z przodu" kadru między
+ * kamerą a wnętrzem, z tekstem hero osadzonym pomiędzy warstwami sceny
+ * (tekst za elementem pierwszoplanowym, przed wnętrzem w tle) dla wrażenia
+ * paralaksy. Podmiana: zastąp <HeroShader /> poniżej komponentem sceny
+ * Three.js (również jako osobna wyspa client:visible, żeby nie ciążyć
+ * na TTI) - reszta strony (Header, tekst hero, CTA w index.astro) nie
+ * wymaga żadnych zmian, bo ten komponent to izolowany hook na tło.
+ */
+import HeroShader from './HeroShader';
+---
+
+<HeroShader client:visible />
