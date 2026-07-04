@@ -15,57 +15,44 @@ const kategoriaLabel: Record<string, string> = {
 };
 ---
 
-<div class="carousel">
-  <div class="carousel-track" id="carousel-track">
+<div class="realizacje-swiper swiper">
+  <div class="swiper-wrapper">
     {
       realizacje.map((r) => (
-        <a href={`/portfolio/${r.slug}/`} class="carousel-card" data-card>
-          <div class="carousel-card-image">
-            {r.okladka && (
-              <img
-                src={strapiMediaUrl(r.okladka.url)}
-                alt={r.okladka.alternativeText ?? `Realizacja Nstudio - ${r.tytul}`}
-                loading="lazy"
-              />
-            )}
-            <span class="carousel-badge">{kategoriaLabel[r.kategoria]}</span>
-          </div>
-          <p class="carousel-title">{r.tytul}</p>
-          {r.lokalizacja && <p class="carousel-location">{r.lokalizacja}</p>}
-        </a>
+        <div class="swiper-slide">
+          <a href={`/portfolio/${r.slug}/`} class="carousel-card">
+            <div class="carousel-card-image">
+              {r.okladka && (
+                <img
+                  src={strapiMediaUrl(r.okladka.url)}
+                  alt={r.okladka.alternativeText ?? `Realizacja Nstudio - ${r.tytul}`}
+                  loading="lazy"
+                />
+              )}
+              <span class="carousel-badge">{kategoriaLabel[r.kategoria]}</span>
+            </div>
+            <p class="carousel-title">{r.tytul}</p>
+            {r.lokalizacja && <p class="carousel-location">{r.lokalizacja}</p>}
+          </a>
+        </div>
       ))
     }
   </div>
-  <button class="carousel-nav prev" aria-label="Poprzednia realizacja" data-dir="-1">‹</button>
-  <button class="carousel-nav next" aria-label="Następna realizacja" data-dir="1">›</button>
+  <button class="carousel-nav prev" aria-label="Poprzednia realizacja">‹</button>
+  <button class="carousel-nav next" aria-label="Następna realizacja">›</button>
 </div>
 
 <style>
-  .carousel {
-    position: relative;
+  .realizacje-swiper {
+    padding: 2.5rem 0 3rem;
   }
 
-  .carousel-track {
-    --card-w: clamp(230px, 26vw, 340px);
-    display: flex;
-    gap: 1.75rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-block: 2.5rem 1rem;
-    padding-inline: calc(50% - var(--card-w) / 2);
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .carousel-track::-webkit-scrollbar {
-    display: none;
+  .swiper-slide {
+    width: clamp(230px, 26vw, 340px);
   }
 
   .carousel-card {
-    flex-shrink: 0;
-    width: var(--card-w);
-    scroll-snap-align: center;
-    will-change: transform, opacity;
+    display: block;
   }
 
   .carousel-card-image {
@@ -107,7 +94,8 @@ const kategoriaLabel: Record<string, string> = {
 
   .carousel-nav {
     position: absolute;
-    top: calc((100% - 3rem) * 0.38);
+    top: 42%;
+    z-index: 10;
     display: flex;
     height: 3rem;
     width: 3rem;
@@ -125,7 +113,7 @@ const kategoriaLabel: Record<string, string> = {
   }
 
   .carousel-nav:hover {
-    transform: scale(1.06);
+    transform: translateY(-50%) scale(1.06);
   }
 
   .carousel-nav.prev {
@@ -147,68 +135,45 @@ const kategoriaLabel: Record<string, string> = {
 </style>
 
 <script>
-  function setupCarousel(root: ParentNode) {
-    const track = root.querySelector<HTMLElement>('#carousel-track');
-    if (!track) return;
-    const cards = Array.from(track.querySelectorAll<HTMLElement>('[data-card]'));
+  import { Swiper } from 'swiper';
+  import { EffectCoverflow, Autoplay, Navigation } from 'swiper/modules';
+  import 'swiper/css';
+  import 'swiper/css/effect-coverflow';
 
-    function update() {
-      if (!track) return;
-      const trackRect = track.getBoundingClientRect();
-      const center = trackRect.left + trackRect.width / 2;
-      const half = trackRect.width / 2;
-
-      cards.forEach((card) => {
-        const rect = card.getBoundingClientRect();
-        const cardCenter = rect.left + rect.width / 2;
-        const dist = Math.abs(cardCenter - center);
-        const norm = Math.min(dist / half, 1);
-        const scale = 1 - norm * 0.22;
-        const opacity = 1 - norm * 0.6;
-        card.style.transform = `scale(${scale})`;
-        card.style.opacity = String(opacity);
-      });
-    }
-
-    let ticking = false;
-    track.addEventListener(
-      'scroll',
-      () => {
-        if (!ticking) {
-          requestAnimationFrame(() => {
-            update();
-            ticking = false;
+  document.querySelectorAll<HTMLElement>('.realizacje-swiper').forEach((el) => {
+    const container = el.parentElement!;
+    const swiper = new Swiper(el, {
+      modules: [EffectCoverflow, Autoplay, Navigation],
+      effect: 'coverflow',
+      centeredSlides: true,
+      slidesPerView: 'auto',
+      loop: true,
+      speed: 600,
+      grabCursor: true,
+      coverflowEffect: {
+        rotate: 0,
+        stretch: 0,
+        depth: 220,
+        modifier: 1.3,
+        slideShadows: false,
+      },
+      autoplay: {
+        delay: 3200,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      },
+      navigation: {
+        nextEl: container.querySelector('.carousel-nav.next'),
+        prevEl: container.querySelector('.carousel-nav.prev'),
+      },
+      on: {
+        progress(swiper) {
+          swiper.slides.forEach((slideEl) => {
+            const p = Math.min(Math.abs((slideEl as unknown as { progress: number }).progress), 1);
+            (slideEl as HTMLElement).style.opacity = String(1 - p * 0.6);
           });
-          ticking = true;
-        }
+        },
       },
-      { passive: true }
-    );
-
-    // let a vertical wheel gesture drive the horizontal carousel too
-    track.addEventListener(
-      'wheel',
-      (e: WheelEvent) => {
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-          e.preventDefault();
-          track.scrollLeft += e.deltaY;
-        }
-      },
-      { passive: false }
-    );
-
-    window.addEventListener('resize', update);
-
-    root.querySelectorAll<HTMLButtonElement>('[data-dir]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const dir = Number(btn.dataset.dir);
-        const cardWidth = cards[0]?.getBoundingClientRect().width ?? 300;
-        track.scrollBy({ left: dir * (cardWidth + 28), behavior: 'smooth' });
-      });
     });
-
-    update();
-  }
-
-  document.querySelectorAll('.carousel').forEach((el) => setupCarousel(el as ParentNode));
+  });
 </script>

@@ -1,10 +1,10 @@
 ---
 interface Props {
-  /** 'dark' = homepage: starts transparent over the hero, condenses into a floating bar once scrolled past it. 'light' = interior pages: no hero to sit over, starts already condensed. */
-  variant?: 'dark' | 'light';
+  /** Theme of the first section on the page, so the header renders correctly server-side before scroll JS runs (no flash). */
+  initialTheme?: 'dark' | 'light';
 }
 
-const { variant = 'light' } = Astro.props;
+const { initialTheme = 'light' } = Astro.props;
 
 const NAV = [
   { href: '/', label: 'Strona główna' },
@@ -18,7 +18,10 @@ const NAV = [
 const currentPath = Astro.url.pathname;
 ---
 
-<header id="site-header" data-variant={variant} class:list={{ 'is-scrolled': variant === 'light' }}>
+<header
+  id="site-header"
+  class:list={['at-top', initialTheme === 'dark' ? 'theme-dark' : 'theme-light']}
+>
   <div class="header-inner">
     <a href="/" class="logo-wrap" aria-label="Nstudio - strona główna">
       <img src="/logo/nstudio-logo-white.png" alt="" class="logo-white" />
@@ -46,28 +49,38 @@ const currentPath = Astro.url.pathname;
 
   .header-inner {
     margin-inline: auto;
-    max-width: 72rem;
+    margin-top: 0.75rem;
+    max-width: calc(72rem - 1.5rem);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.5rem 1.5rem;
+    padding: 0.6rem 1.5rem;
     border-radius: 9999px;
-    background: transparent;
-    box-shadow: none;
+    backdrop-filter: blur(14px);
     transition:
-      margin 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-      padding 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-      max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-      background-color 0.5s ease,
-      box-shadow 0.5s ease;
+      margin 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      border-radius 0.4s ease,
+      background-color 0.4s ease,
+      box-shadow 0.4s ease;
   }
 
-  #site-header.is-scrolled .header-inner {
-    margin-top: 0.75rem;
-    max-width: calc(72rem - 1.5rem);
-    padding: 0.6rem 1.5rem;
-    background-color: rgba(245, 241, 236, 0.85);
-    backdrop-filter: blur(14px);
+  /* Flush full-width bar right at the top of the page; detaches into a floating pill on first scroll. */
+  #site-header.at-top .header-inner {
+    margin-top: 0;
+    max-width: 72rem;
+    padding: 1.5rem 1.5rem;
+    border-radius: 0;
+  }
+
+  #site-header.theme-dark .header-inner {
+    background-color: rgba(29, 29, 29, 0.55);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
+  }
+
+  #site-header.theme-light .header-inner {
+    background-color: rgba(245, 241, 236, 0.8);
     box-shadow: 0 10px 40px rgba(29, 29, 29, 0.08);
   }
 
@@ -85,7 +98,7 @@ const currentPath = Astro.url.pathname;
     height: 100%;
     width: 100%;
     object-fit: contain;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.4s ease;
   }
 
   .logo-white {
@@ -96,11 +109,11 @@ const currentPath = Astro.url.pathname;
     opacity: 0;
   }
 
-  #site-header.is-scrolled .logo-white {
+  #site-header.theme-light .logo-white {
     opacity: 0;
   }
 
-  #site-header.is-scrolled .logo-black {
+  #site-header.theme-light .logo-black {
     opacity: 1;
   }
 
@@ -109,7 +122,7 @@ const currentPath = Astro.url.pathname;
     text-transform: uppercase;
     letter-spacing: 0.14em;
     color: rgba(245, 241, 236, 0.8);
-    transition: color 0.5s ease;
+    transition: color 0.4s ease;
   }
 
   .nav-link:hover {
@@ -121,15 +134,15 @@ const currentPath = Astro.url.pathname;
     font-weight: 500;
   }
 
-  #site-header.is-scrolled .nav-link {
+  #site-header.theme-light .nav-link {
     color: rgba(29, 29, 29, 0.65);
   }
 
-  #site-header.is-scrolled .nav-link:hover {
+  #site-header.theme-light .nav-link:hover {
     color: rgba(29, 29, 29, 1);
   }
 
-  #site-header.is-scrolled .nav-link.active {
+  #site-header.theme-light .nav-link.active {
     color: rgb(29, 29, 29);
   }
 </style>
@@ -139,16 +152,43 @@ const currentPath = Astro.url.pathname;
     const header = document.getElementById('site-header');
     if (!header) return;
 
-    if (header.dataset.variant !== 'dark') return; // 'light' pages start already condensed, no scroll logic needed
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-theme]'));
+    if (sections.length === 0) return;
 
-    const hero = document.querySelector('[data-hero]');
-    if (!hero) return;
+    // Sample point just below the header's vertical center - whichever section
+    // currently sits behind it decides the header's light/dark theme.
+    const PROBE_Y = 48;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => header.classList.toggle('is-scrolled', !entry.isIntersecting),
-      { rootMargin: '-80px 0px 0px 0px', threshold: 0 }
+    function update() {
+      header!.classList.toggle('at-top', window.scrollY < 8);
+
+      for (const section of sections) {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= PROBE_Y && rect.bottom > PROBE_Y) {
+          const isDark = section.dataset.theme === 'dark';
+          header!.classList.toggle('theme-dark', isDark);
+          header!.classList.toggle('theme-light', !isDark);
+          break;
+        }
+      }
+    }
+
+    let ticking = false;
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            update();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      },
+      { passive: true }
     );
-    observer.observe(hero);
+
+    update();
   }
 
   setupHeader();

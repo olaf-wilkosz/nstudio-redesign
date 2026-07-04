@@ -28,14 +28,14 @@ const oferta = [
 ---
 
 <Layout title="Strona główna">
-  <Header variant="dark" />
+  <Header initialTheme="dark" />
 
   <!--
     HERO - placeholder gradient dla PoC. Docelowy punkt rozbudowy: scena 3D
     (Three.js) pokazująca wnętrze z efektem głębi, patrz krok 5 briefu i
     komponent Hero3DPlaceholder.astro, ktory zastapi ta sekcje.
   -->
-  <section data-hero class="relative flex min-h-screen items-end overflow-hidden bg-ink">
+  <section data-theme="dark" class="relative flex min-h-screen items-end overflow-hidden bg-ink">
     <div
       class="absolute inset-0"
       style="background: radial-gradient(circle at 30% 20%, #3a2f22 0%, #1d1d1d 55%), linear-gradient(160deg, #2b2116 0%, #1d1d1d 70%);"
@@ -60,7 +60,7 @@ const oferta = [
   </section>
 
   <!-- Filozofia -->
-  <section class="py-24">
+  <section data-theme="light" class="py-24">
     <Container class="max-w-3xl text-center">
       <p class="font-serif text-3xl leading-snug text-ink md:text-4xl">
         „Wierzę, że wnętrze jest odzwierciedleniem duszy mieszkańców.”
@@ -75,7 +75,7 @@ const oferta = [
   </section>
 
   <!-- Wybrane realizacje -->
-  <section class="overflow-hidden bg-white py-24">
+  <section data-theme="light" class="overflow-hidden bg-white py-24">
     <Container class="mb-2">
       <div class="flex items-end justify-between">
         <h2 class="font-serif text-3xl text-ink md:text-4xl">Wybrane realizacje</h2>
@@ -88,7 +88,7 @@ const oferta = [
   </section>
 
   <!-- Oferta -->
-  <section class="py-24">
+  <section data-theme="light" class="py-24">
     <Container>
       <h2 class="mb-12 font-serif text-3xl text-ink md:text-4xl">Jak pracujemy</h2>
       <div class="grid gap-10 md:grid-cols-3">
