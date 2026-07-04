@@ -5,12 +5,24 @@ import { withBase } from './url';
 
 const STRAPI_URL = import.meta.env.STRAPI_URL ?? 'http://localhost:1337';
 
+interface StrapiMediaFormat {
+  url: string;
+  width: number;
+  height: number;
+}
+
 export interface StrapiMedia {
   id: number;
   url: string;
   alternativeText: string | null;
   width: number;
   height: number;
+  formats: {
+    thumbnail?: StrapiMediaFormat;
+    small?: StrapiMediaFormat;
+    medium?: StrapiMediaFormat;
+    large?: StrapiMediaFormat;
+  } | null;
 }
 
 export type Kategoria = 'mieszkanie' | 'dom' | 'komercyjne';
@@ -81,6 +93,36 @@ async function strapiFetch<T>(path: string): Promise<T> {
 export function strapiMediaUrl(url: string): string {
   if (url.startsWith('http')) return url;
   return import.meta.env.PROD ? withBase(url) : `${STRAPI_URL}${url}`;
+}
+
+type ImageSize = 'thumbnail' | 'small' | 'medium' | 'large' | 'original';
+
+// Preferred format to fall back through if the requested size wasn't
+// generated (Strapi skips a format when the original is already smaller
+// than that breakpoint).
+const FALLBACK_ORDER: Record<Exclude<ImageSize, 'original'>, Array<keyof NonNullable<StrapiMedia['formats']>>> = {
+  thumbnail: ['thumbnail', 'small', 'medium', 'large'],
+  small: ['small', 'medium', 'large', 'thumbnail'],
+  medium: ['medium', 'large', 'small', 'thumbnail'],
+  large: ['large', 'medium', 'small', 'thumbnail'],
+};
+
+/**
+ * Strapi's local upload provider already generates thumbnail/small/medium/
+ * large variants for every image (via sharp) - using those instead of the
+ * always-full-resolution `url` is the single biggest image-weight win here
+ * (e.g. a 2000px original at ~320KB vs. its 750px "medium" at ~58KB for a
+ * card displayed at ~535px). Falls back to the original if no formats exist
+ * (e.g. the source image was already smaller than every breakpoint).
+ */
+export function strapiImageSrc(media: StrapiMedia, size: ImageSize = 'medium'): string {
+  if (size !== 'original' && media.formats) {
+    for (const candidate of FALLBACK_ORDER[size]) {
+      const fmt = media.formats[candidate];
+      if (fmt) return strapiMediaUrl(fmt.url);
+    }
+  }
+  return strapiMediaUrl(media.url);
 }
 
 export async function getRealizacje(): Promise<Realizacja[]> {

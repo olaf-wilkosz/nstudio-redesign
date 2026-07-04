@@ -4,7 +4,7 @@ import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
 import Container from '../../../components/Container.astro';
-import { getPostyBloga, getUstawienia, strapiMediaUrl } from '../../../lib/strapi';
+import { getPostyBloga, getUstawienia, strapiImageSrc } from '../../../lib/strapi';
 import { withBase } from '../../../lib/url';
 
 export async function getStaticPaths() {
@@ -26,7 +26,7 @@ const formatData = (iso: string) =>
 <Layout
   title={post.tytul}
   description={post.zajawka ?? post.tytul}
-  ogImage={post.okladka ? strapiMediaUrl(post.okladka.url) : undefined}
+  ogImage={post.okladka ? strapiImageSrc(post.okladka, 'large') : undefined}
   ogType="article"
 >
   <Header />
@@ -44,7 +44,7 @@ const formatData = (iso: string) =>
       <div class="bg-white">
         <Container class="max-w-3xl py-10">
           <img
-            src={strapiMediaUrl(post.okladka.url)}
+            src={strapiImageSrc(post.okladka, 'large')}
             alt={post.okladka.alternativeText ?? post.tytul}
             class="w-full object-cover"
           />

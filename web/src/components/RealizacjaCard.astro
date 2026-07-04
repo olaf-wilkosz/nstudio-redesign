@@ -1,6 +1,6 @@
 ---
 import type { Realizacja } from '../lib/strapi';
-import { strapiMediaUrl } from '../lib/strapi';
+import { strapiImageSrc } from '../lib/strapi';
 import { withBase } from '../lib/url';
 
 interface Props {
@@ -34,7 +34,7 @@ const kategoriaLabel: Record<string, string> = {
     {
       realizacja.okladka && (
         <img
-          src={strapiMediaUrl(realizacja.okladka.url)}
+          src={strapiImageSrc(realizacja.okladka, 'medium')}
           alt={realizacja.okladka.alternativeText ?? `Realizacja Nstudio - ${realizacja.tytul}`}
           loading="lazy"
           class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"

@@ -4,7 +4,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import Container from '../../components/Container.astro';
 import PageHeader from '../../components/PageHeader.astro';
-import { getPostyBloga, getUstawienia, strapiMediaUrl } from '../../lib/strapi';
+import { getPostyBloga, getUstawienia, strapiImageSrc } from '../../lib/strapi';
 import { withBase } from '../../lib/url';
 
 const posty = await getPostyBloga();
@@ -31,7 +31,7 @@ const formatData = (iso: string) =>
                 {post.okladka && (
                   <div class="aspect-[3/2] overflow-hidden bg-ink/5">
                     <img
-                      src={strapiMediaUrl(post.okladka.url)}
+                      src={strapiImageSrc(post.okladka, 'medium')}
                       alt={post.okladka.alternativeText ?? post.tytul}
                       loading="lazy"
                       class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"

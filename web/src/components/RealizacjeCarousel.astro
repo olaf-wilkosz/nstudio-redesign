@@ -1,6 +1,6 @@
 ---
 import type { Realizacja } from '../lib/strapi';
-import { strapiMediaUrl } from '../lib/strapi';
+import { strapiImageSrc } from '../lib/strapi';
 import { withBase } from '../lib/url';
 
 interface Props {
@@ -26,7 +26,7 @@ const kategoriaLabel: Record<string, string> = {
               <div class="carousel-card-image">
                 {r.okladka && (
                   <img
-                    src={strapiMediaUrl(r.okladka.url)}
+                    src={strapiImageSrc(r.okladka, 'medium')}
                     alt={r.okladka.alternativeText ?? `Realizacja Nstudio - ${r.tytul}`}
                   />
                 )}
