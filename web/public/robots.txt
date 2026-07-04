@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://olaf-wilkosz.github.io/sitemap-index.xml
+Sitemap: https://olaf-wilkosz.github.io/nstudio-redesign/sitemap-index.xml

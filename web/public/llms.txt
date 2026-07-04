@@ -8,12 +8,12 @@ zrealizowanymi projektami wnętrz od 5 lat na rynku.
 
 ## Strony
 
-- [Strona główna](/): wprowadzenie, wybrane realizacje, filozofia pracowni
-- [O mnie](/o-mnie/): bio Natalii Osipy-Indyckiej, doświadczenie
-- [Portfolio](/portfolio/): pełne portfolio realizacji z podziałem na mieszkania, domy, komercyjne
-- [Oferta](/oferta/): trzy pakiety współpracy (projekt kompleksowy, z nadzorem, pod klucz)
-- [Blog](/blog/): artykuły o projektowaniu wnętrz
-- [Kontakt](/kontakt/): dane kontaktowe, lokalizacja biura
+- [Strona główna](https://olaf-wilkosz.github.io/nstudio-redesign/): wprowadzenie, wybrane realizacje, filozofia pracowni
+- [O mnie](https://olaf-wilkosz.github.io/nstudio-redesign/o-mnie/): bio Natalii Osipy-Indyckiej, doświadczenie
+- [Portfolio](https://olaf-wilkosz.github.io/nstudio-redesign/portfolio/): pełne portfolio realizacji z podziałem na mieszkania, domy, komercyjne
+- [Oferta](https://olaf-wilkosz.github.io/nstudio-redesign/oferta/): trzy pakiety współpracy (projekt kompleksowy, z nadzorem, pod klucz)
+- [Blog](https://olaf-wilkosz.github.io/nstudio-redesign/blog/): artykuły o projektowaniu wnętrz
+- [Kontakt](https://olaf-wilkosz.github.io/nstudio-redesign/kontakt/): dane kontaktowe, lokalizacja biura
 
 ## Kontakt
 
