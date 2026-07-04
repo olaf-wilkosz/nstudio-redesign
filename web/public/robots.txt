@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://olaf-wilkosz.github.io/sitemap-index.xml

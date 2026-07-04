@@ -1,0 +1,43 @@
+---
+import { getUstawienia } from '../lib/strapi';
+
+const ustawienia = await getUstawienia();
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
+
+const sameAs = [ustawienia.facebook, ustawienia.instagram, ustawienia.youtube].filter(
+  (v): v is string => Boolean(v)
+);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Nstudio - Natalia Osipa-Indycka',
+  description:
+    'Pracownia projektowania wnętrz w Rzeszowie - projekty kompleksowe, z nadzorem i realizacje pod klucz dla mieszkań, domów i przestrzeni komercyjnych.',
+  url: siteUrl,
+  image: `${siteUrl}/images/og-default.jpg`,
+  telephone: ustawienia.telefon ?? undefined,
+  email: ustawienia.email ?? undefined,
+  address: ustawienia.adres
+    ? {
+        '@type': 'PostalAddress',
+        streetAddress: ustawienia.adres,
+        addressLocality: 'Rzeszów',
+        addressCountry: 'PL',
+      }
+    : undefined,
+  geo:
+    ustawienia.lat && ustawienia.lng
+      ? {
+          '@type': 'GeoCoordinates',
+          latitude: ustawienia.lat,
+          longitude: ustawienia.lng,
+        }
+      : undefined,
+  areaServed: ['Rzeszów', 'Tarnów', 'Kraków', 'Zakopane', 'Stalowa Wola'],
+  priceRange: '$$',
+  sameAs: sameAs.length > 0 ? sameAs : undefined,
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

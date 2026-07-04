@@ -22,7 +22,12 @@ const formatData = (iso: string) =>
   new Date(iso).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
 
-<Layout title={post.tytul} description={post.zajawka ?? post.tytul}>
+<Layout
+  title={post.tytul}
+  description={post.zajawka ?? post.tytul}
+  ogImage={post.okladka ? strapiMediaUrl(post.okladka.url) : undefined}
+  ogType="article"
+>
   <Header />
 
   <section data-theme="light" class="bg-cream pt-40 pb-14 md:pt-48">

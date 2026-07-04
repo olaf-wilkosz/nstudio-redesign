@@ -27,6 +27,8 @@ const kategoriaLabel: Record<string, string> = {
 <Layout
   title={realizacja.tytul}
   description={realizacja.opis ?? `Realizacja Nstudio - ${realizacja.tytul}.`}
+  ogImage={realizacja.okladka ? strapiMediaUrl(realizacja.okladka.url) : undefined}
+  ogType="article"
 >
   <Header />
 

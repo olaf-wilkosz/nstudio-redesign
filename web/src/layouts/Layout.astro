@@ -1,12 +1,25 @@
 ---
 import '../styles/global.css';
+import StructuredData from '../components/StructuredData.astro';
 
 interface Props {
   title: string;
   description?: string;
+  /** Root-relative path to a social preview image, e.g. from a Realizacja's cover photo. Falls back to a sitewide default. */
+  ogImage?: string;
+  ogType?: 'website' | 'article';
 }
 
-const { title, description = 'Nstudio - pracownia projektowania wnętrz, Rzeszów.' } = Astro.props;
+const {
+  title,
+  description = 'Nstudio - pracownia projektowania wnętrz Natalii Osipy-Indyckiej. Rzeszów.',
+  ogImage = '/images/og-default.jpg',
+  ogType = 'website',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(ogImage, Astro.site);
+const pageTitle = `${title} · Nstudio`;
 ---
 
 <!doctype html>
@@ -17,8 +30,25 @@ const { title, description = 'Nstudio - pracownia projektowania wnętrz, Rzeszó
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
 
-    <title>{title} · Nstudio</title>
+    <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="Nstudio" />
+    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImageURL} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+
+    <StructuredData />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
