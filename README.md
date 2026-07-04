@@ -4,6 +4,8 @@ Proof-of-concept refresh of [nstudio.pl](https://nstudio.pl) - pracownia projekt
 Nstudio (Rzeszów, Natalia Osipa-Indycka). Ewolucja wizualna i techniczna obecnej strony
 (WordPress + Elementor), bez zmiany architektury informacji ani nazwy marki.
 
+**Live:** https://olaf-wilkosz.github.io/nstudio-redesign/
+
 ## Struktura repo
 
 ```
@@ -54,8 +56,22 @@ podczas builda, na podstawie danych pobranych ze Strapi REST API w tym momencie.
 
 - [x] Krok 1: scraping i analiza nstudio.pl (`content/scraped/`)
 - [x] Krok 2: setup Astro + Strapi, content types, integracja REST API w build-time
-- [ ] Krok 3: design system (kolory, typografia, komponenty bazowe)
-- [ ] Krok 4: podstrony z realną treścią
-- [ ] Krok 5: hero z shaderem + placeholder pod Three.js
-- [ ] Krok 6: SEO / structured data
-- [ ] Krok 7: GitHub Actions + deploy na GitHub Pages
+- [x] Krok 3: design system (kolory, typografia, komponenty bazowe)
+- [x] Krok 4: podstrony z realną treścią
+- [x] Krok 5: hero z shaderem + placeholder pod Three.js (`Hero3DPlaceholder.astro`)
+- [x] Krok 6: SEO / structured data
+- [x] Krok 7: GitHub Actions + deploy na GitHub Pages
+
+## Deploy
+
+`.github/workflows/deploy.yml` buduje i wdraża stronę na GitHub Pages przy każdym pushu do
+`main`. Ponieważ Astro pobiera dane ze Strapi w build-time, a Strapi Cloud jest poza zakresem
+tego PoC, workflow odpala efemeryczny Strapi (świeże sekrety, seed tym samym skryptem co
+lokalnie, serwer w tle) wyłącznie na czas builda w tym samym jobie CI - bez żadnej zewnętrznej
+zależności hostingowej. Obrazy z uploadów Strapi są kopiowane do statycznego builda
+(`web/scripts/sync-uploads.mjs`), więc wdrożona strona nie zależy od działającego Strapi
+w runtime.
+
+Strona jest wdrożona pod subdomeną GitHub Pages, nie pod nstudio.pl - `astro.config.mjs` ma
+ustawione `base: '/nstudio-redesign'`, a wszystkie wewnętrzne linki/obrazy przechodzą przez
+`web/src/lib/url.ts` (`withBase`), żeby to respektować.
