@@ -4,20 +4,12 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Container from '../components/Container.astro';
 import Button from '../components/Button.astro';
-import RealizacjaCard from '../components/RealizacjaCard.astro';
+import RealizacjeCarousel from '../components/RealizacjeCarousel.astro';
 import { getRealizacje, getUstawienia } from '../lib/strapi';
 
 const realizacje = await getRealizacje();
 const ustawienia = await getUstawienia();
-const featured = realizacje.slice(0, 6);
-const aspects: Array<'square' | 'portrait' | 'landscape'> = [
-  'portrait',
-  'square',
-  'landscape',
-  'square',
-  'portrait',
-  'landscape',
-];
+const featured = realizacje.slice(0, 10);
 
 const oferta = [
   {
@@ -43,7 +35,7 @@ const oferta = [
     (Three.js) pokazująca wnętrze z efektem głębi, patrz krok 5 briefu i
     komponent Hero3DPlaceholder.astro, ktory zastapi ta sekcje.
   -->
-  <section class="relative flex min-h-screen items-end overflow-hidden bg-ink">
+  <section data-hero class="relative flex min-h-screen items-end overflow-hidden bg-ink">
     <div
       class="absolute inset-0"
       style="background: radial-gradient(circle at 30% 20%, #3a2f22 0%, #1d1d1d 55%), linear-gradient(160deg, #2b2116 0%, #1d1d1d 70%);"
@@ -83,21 +75,16 @@ const oferta = [
   </section>
 
   <!-- Wybrane realizacje -->
-  <section class="bg-white py-24">
-    <Container>
-      <div class="mb-12 flex items-end justify-between">
+  <section class="overflow-hidden bg-white py-24">
+    <Container class="mb-2">
+      <div class="flex items-end justify-between">
         <h2 class="font-serif text-3xl text-ink md:text-4xl">Wybrane realizacje</h2>
         <a href="/portfolio/" class="hidden text-sm text-muted hover:text-ink md:block">
           Całe portfolio →
         </a>
       </div>
-      <div class="grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3">
-        {featured.map((r, i) => <RealizacjaCard realizacja={r} aspect={aspects[i % aspects.length]} />)}
-      </div>
-      <a href="/portfolio/" class="mt-10 block text-center text-sm text-muted hover:text-ink md:hidden">
-        Całe portfolio →
-      </a>
     </Container>
+    <RealizacjeCarousel realizacje={featured} />
   </section>
 
   <!-- Oferta -->

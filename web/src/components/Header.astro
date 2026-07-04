@@ -1,8 +1,6 @@
 ---
-import Container from './Container.astro';
-
 interface Props {
-  /** 'dark' = light text over a dark/hero background (homepage), 'light' = dark text over the cream body background (interior pages). */
+  /** 'dark' = homepage: starts transparent over the hero, condenses into a floating bar once scrolled past it. 'light' = interior pages: no hero to sit over, starts already condensed. */
   variant?: 'dark' | 'light';
 }
 
@@ -18,33 +16,140 @@ const NAV = [
 ];
 
 const currentPath = Astro.url.pathname;
-const isDark = variant === 'dark';
 ---
 
-<header class:list={['inset-x-0 top-0 z-20', isDark ? 'absolute' : 'relative']}>
-  <Container class="flex items-center justify-between py-7">
-    <a
-      href="/"
-      class:list={['font-serif text-2xl tracking-[0.12em]', isDark ? 'text-cream' : 'text-ink']}
-    >
-      Nstudio
+<header id="site-header" data-variant={variant} class:list={{ 'is-scrolled': variant === 'light' }}>
+  <div class="header-inner">
+    <a href="/" class="logo-wrap" aria-label="Nstudio - strona główna">
+      <img src="/logo/nstudio-logo-white.png" alt="" class="logo-white" />
+      <img src="/logo/nstudio-logo-black.png" alt="Nstudio" class="logo-black" />
     </a>
     <nav class="hidden gap-8 md:flex">
       {
         NAV.map((item) => (
-          <a
-            href={item.href}
-            class:list={[
-              'text-xs uppercase tracking-[0.14em] transition-colors',
-              isDark ? 'text-cream/80 hover:text-cream' : 'text-body/70 hover:text-ink',
-              { 'font-medium': currentPath === item.href },
-              currentPath === item.href && (isDark ? 'text-cream' : 'text-ink'),
-            ]}
-          >
+          <a href={item.href} class:list={['nav-link', { active: currentPath === item.href }]}>
             {item.label}
           </a>
         ))
       }
     </nav>
-  </Container>
+  </div>
 </header>
+
+<style>
+  #site-header {
+    position: fixed;
+    inset-inline: 0;
+    top: 0;
+    z-index: 50;
+  }
+
+  .header-inner {
+    margin-inline: auto;
+    max-width: 72rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 1.5rem;
+    border-radius: 9999px;
+    background: transparent;
+    box-shadow: none;
+    transition:
+      margin 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      padding 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      background-color 0.5s ease,
+      box-shadow 0.5s ease;
+  }
+
+  #site-header.is-scrolled .header-inner {
+    margin-top: 0.75rem;
+    max-width: calc(72rem - 1.5rem);
+    padding: 0.6rem 1.5rem;
+    background-color: rgba(245, 241, 236, 0.85);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 10px 40px rgba(29, 29, 29, 0.08);
+  }
+
+  .logo-wrap {
+    position: relative;
+    display: block;
+    height: 3rem;
+    width: 3rem;
+    flex-shrink: 0;
+  }
+
+  .logo-wrap img {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    transition: opacity 0.5s ease;
+  }
+
+  .logo-white {
+    opacity: 1;
+  }
+
+  .logo-black {
+    opacity: 0;
+  }
+
+  #site-header.is-scrolled .logo-white {
+    opacity: 0;
+  }
+
+  #site-header.is-scrolled .logo-black {
+    opacity: 1;
+  }
+
+  .nav-link {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: rgba(245, 241, 236, 0.8);
+    transition: color 0.5s ease;
+  }
+
+  .nav-link:hover {
+    color: rgba(245, 241, 236, 1);
+  }
+
+  .nav-link.active {
+    color: rgb(245, 241, 236);
+    font-weight: 500;
+  }
+
+  #site-header.is-scrolled .nav-link {
+    color: rgba(29, 29, 29, 0.65);
+  }
+
+  #site-header.is-scrolled .nav-link:hover {
+    color: rgba(29, 29, 29, 1);
+  }
+
+  #site-header.is-scrolled .nav-link.active {
+    color: rgb(29, 29, 29);
+  }
+</style>
+
+<script>
+  function setupHeader() {
+    const header = document.getElementById('site-header');
+    if (!header) return;
+
+    if (header.dataset.variant !== 'dark') return; // 'light' pages start already condensed, no scroll logic needed
+
+    const hero = document.querySelector('[data-hero]');
+    if (!hero) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => header.classList.toggle('is-scrolled', !entry.isIntersecting),
+      { rootMargin: '-80px 0px 0px 0px', threshold: 0 }
+    );
+    observer.observe(hero);
+  }
+
+  setupHeader();
+</script>

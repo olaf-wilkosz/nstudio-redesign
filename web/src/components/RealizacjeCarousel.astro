@@ -1,0 +1,214 @@
+---
+import type { Realizacja } from '../lib/strapi';
+import { strapiMediaUrl } from '../lib/strapi';
+
+interface Props {
+  realizacje: Realizacja[];
+}
+
+const { realizacje } = Astro.props;
+
+const kategoriaLabel: Record<string, string> = {
+  mieszkanie: 'Mieszkanie',
+  dom: 'Dom',
+  komercyjne: 'Komercyjne',
+};
+---
+
+<div class="carousel">
+  <div class="carousel-track" id="carousel-track">
+    {
+      realizacje.map((r) => (
+        <a href={`/portfolio/${r.slug}/`} class="carousel-card" data-card>
+          <div class="carousel-card-image">
+            {r.okladka && (
+              <img
+                src={strapiMediaUrl(r.okladka.url)}
+                alt={r.okladka.alternativeText ?? `Realizacja Nstudio - ${r.tytul}`}
+                loading="lazy"
+              />
+            )}
+            <span class="carousel-badge">{kategoriaLabel[r.kategoria]}</span>
+          </div>
+          <p class="carousel-title">{r.tytul}</p>
+          {r.lokalizacja && <p class="carousel-location">{r.lokalizacja}</p>}
+        </a>
+      ))
+    }
+  </div>
+  <button class="carousel-nav prev" aria-label="Poprzednia realizacja" data-dir="-1">‹</button>
+  <button class="carousel-nav next" aria-label="Następna realizacja" data-dir="1">›</button>
+</div>
+
+<style>
+  .carousel {
+    position: relative;
+  }
+
+  .carousel-track {
+    --card-w: clamp(230px, 26vw, 340px);
+    display: flex;
+    gap: 1.75rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-block: 2.5rem 1rem;
+    padding-inline: calc(50% - var(--card-w) / 2);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-card {
+    flex-shrink: 0;
+    width: var(--card-w);
+    scroll-snap-align: center;
+    will-change: transform, opacity;
+  }
+
+  .carousel-card-image {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: rgba(29, 29, 29, 0.05);
+  }
+
+  .carousel-card-image img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .carousel-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(245, 241, 236, 0.9);
+    color: var(--color-ink);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.65rem;
+  }
+
+  .carousel-title {
+    margin-top: 0.9rem;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: var(--color-ink);
+  }
+
+  .carousel-location {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+
+  .carousel-nav {
+    position: absolute;
+    top: calc((100% - 3rem) * 0.38);
+    display: flex;
+    height: 3rem;
+    width: 3rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: rgba(245, 241, 236, 0.9);
+    color: var(--color-ink);
+    font-size: 1.5rem;
+    line-height: 1;
+    box-shadow: 0 8px 24px rgba(29, 29, 29, 0.12);
+    transition:
+      opacity 0.3s ease,
+      transform 0.2s ease;
+  }
+
+  .carousel-nav:hover {
+    transform: scale(1.06);
+  }
+
+  .carousel-nav.prev {
+    left: 0.5rem;
+  }
+
+  .carousel-nav.next {
+    right: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .carousel-nav.prev {
+      left: 2rem;
+    }
+    .carousel-nav.next {
+      right: 2rem;
+    }
+  }
+</style>
+
+<script>
+  function setupCarousel(root: ParentNode) {
+    const track = root.querySelector<HTMLElement>('#carousel-track');
+    if (!track) return;
+    const cards = Array.from(track.querySelectorAll<HTMLElement>('[data-card]'));
+
+    function update() {
+      if (!track) return;
+      const trackRect = track.getBoundingClientRect();
+      const center = trackRect.left + trackRect.width / 2;
+      const half = trackRect.width / 2;
+
+      cards.forEach((card) => {
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.left + rect.width / 2;
+        const dist = Math.abs(cardCenter - center);
+        const norm = Math.min(dist / half, 1);
+        const scale = 1 - norm * 0.22;
+        const opacity = 1 - norm * 0.6;
+        card.style.transform = `scale(${scale})`;
+        card.style.opacity = String(opacity);
+      });
+    }
+
+    let ticking = false;
+    track.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            update();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
+
+    // let a vertical wheel gesture drive the horizontal carousel too
+    track.addEventListener(
+      'wheel',
+      (e: WheelEvent) => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+          e.preventDefault();
+          track.scrollLeft += e.deltaY;
+        }
+      },
+      { passive: false }
+    );
+
+    window.addEventListener('resize', update);
+
+    root.querySelectorAll<HTMLButtonElement>('[data-dir]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const dir = Number(btn.dataset.dir);
+        const cardWidth = cards[0]?.getBoundingClientRect().width ?? 300;
+        track.scrollBy({ left: dir * (cardWidth + 28), behavior: 'smooth' });
+      });
+    });
+
+    update();
+  }
+
+  document.querySelectorAll('.carousel').forEach((el) => setupCarousel(el as ParentNode));
+</script>
