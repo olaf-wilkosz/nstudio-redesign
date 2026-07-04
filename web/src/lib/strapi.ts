@@ -1,6 +1,8 @@
 // Build-time (SSG) REST client for the local Strapi CMS. Astro calls these
 // functions in frontmatter / getStaticPaths, never in the browser, so plain
 // (non-PUBLIC_) env vars are fine here - see astro.build/en/guides/environment-variables.
+import { withBase } from './url';
+
 const STRAPI_URL = import.meta.env.STRAPI_URL ?? 'http://localhost:1337';
 
 export interface StrapiMedia {
@@ -68,9 +70,17 @@ async function strapiFetch<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-/** Resolves a Strapi media `url` (often relative) to an absolute URL. */
+/**
+ * Resolves a Strapi media `url`. In production builds, Strapi's uploaded
+ * files are copied into web/public/uploads (see scripts/sync-uploads.mjs,
+ * wired as a "prebuild" step) so the deployed static site never depends on
+ * Strapi still running - this returns a same-origin path for those. In dev
+ * mode it points straight at the live local Strapi instance for fast
+ * iteration without needing to re-sync files on every change.
+ */
 export function strapiMediaUrl(url: string): string {
-  return url.startsWith('http') ? url : `${STRAPI_URL}${url}`;
+  if (url.startsWith('http')) return url;
+  return import.meta.env.PROD ? withBase(url) : `${STRAPI_URL}${url}`;
 }
 
 export async function getRealizacje(): Promise<Realizacja[]> {

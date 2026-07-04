@@ -1,5 +1,8 @@
 # build output
 dist/
+
+# synced from cms/public/uploads by scripts/sync-uploads.mjs (prebuild) - regenerated, not source
+public/uploads/
 # generated types
 .astro/
 
