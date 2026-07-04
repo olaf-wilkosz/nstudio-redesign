@@ -1,0 +1,50 @@
+---
+import Container from './Container.astro';
+
+interface Props {
+  /** 'dark' = light text over a dark/hero background (homepage), 'light' = dark text over the cream body background (interior pages). */
+  variant?: 'dark' | 'light';
+}
+
+const { variant = 'light' } = Astro.props;
+
+const NAV = [
+  { href: '/', label: 'Strona główna' },
+  { href: '/o-mnie/', label: 'O mnie' },
+  { href: '/portfolio/', label: 'Portfolio' },
+  { href: '/oferta/', label: 'Oferta' },
+  { href: '/blog/', label: 'Blog' },
+  { href: '/kontakt/', label: 'Kontakt' },
+];
+
+const currentPath = Astro.url.pathname;
+const isDark = variant === 'dark';
+---
+
+<header class:list={['inset-x-0 top-0 z-20', isDark ? 'absolute' : 'relative']}>
+  <Container class="flex items-center justify-between py-7">
+    <a
+      href="/"
+      class:list={['font-serif text-2xl tracking-[0.12em]', isDark ? 'text-cream' : 'text-ink']}
+    >
+      Nstudio
+    </a>
+    <nav class="hidden gap-8 md:flex">
+      {
+        NAV.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'text-xs uppercase tracking-[0.14em] transition-colors',
+              isDark ? 'text-cream/80 hover:text-cream' : 'text-body/70 hover:text-ink',
+              { 'font-medium': currentPath === item.href },
+              currentPath === item.href && (isDark ? 'text-cream' : 'text-ink'),
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+  </Container>
+</header>

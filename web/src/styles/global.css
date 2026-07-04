@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens - evolution of nstudio.pl's existing Elementor palette
+ * (see content/scraped/12-color-palette.md for the extraction/rationale).
+ * Primary gold and the dark ink stay 1:1 with the current brand; the
+ * accidental green UI accent from Elementor's default kit is replaced with
+ * a warmer tone already present in the site's own page-transition CSS.
+ */
+@theme {
+  --color-primary: #e4bb7d;
+  --color-primary-dark: #c9a066;
+  --color-ink: #1d1d1d;
+  --color-accent: #ffbc7d;
+  --color-cream: #f5f1ec;
+  --color-body: #2b2b2b;
+  --color-muted: #848484;
+
+  --font-serif: "Playfair Display", "Georgia", serif;
+  --font-sans: "Heebo", "Segoe UI", sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-body);
+    background-color: var(--color-cream);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    color: var(--color-ink);
+    letter-spacing: 0.01em;
+  }
+}

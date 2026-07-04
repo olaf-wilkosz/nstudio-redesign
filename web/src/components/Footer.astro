@@ -1,0 +1,38 @@
+---
+import Container from './Container.astro';
+import type { Ustawienia } from '../lib/strapi';
+
+interface Props {
+  ustawienia: Ustawienia;
+}
+
+const { ustawienia } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-ink text-cream">
+  <Container class="grid gap-10 py-16 md:grid-cols-3">
+    <div>
+      <p class="font-serif text-2xl tracking-[0.1em]">Nstudio</p>
+      <p class="mt-3 max-w-xs text-sm text-cream/60">
+        Pracownia projektowania wnętrz Natalii Osipy-Indyckiej. Rzeszów.
+      </p>
+    </div>
+    <div class="text-sm text-cream/70">
+      <p class="mb-3 text-xs tracking-[0.14em] text-cream/40 uppercase">Kontakt</p>
+      {ustawienia.telefon && <p>{ustawienia.telefon}</p>}
+      {ustawienia.email && <p>{ustawienia.email}</p>}
+      {ustawienia.adres && <p class="mt-2 max-w-xs">{ustawienia.adres}</p>}
+    </div>
+    <div class="text-sm text-cream/70">
+      <p class="mb-3 text-xs tracking-[0.14em] text-cream/40 uppercase">Social</p>
+      <div class="flex flex-col gap-2">
+        {ustawienia.instagram && <a href={ustawienia.instagram} class="hover:text-cream">Instagram</a>}
+        {ustawienia.facebook && <a href={ustawienia.facebook} class="hover:text-cream">Facebook</a>}
+      </div>
+    </div>
+  </Container>
+  <Container class="border-t border-cream/10 py-6 text-xs text-cream/40">
+    &copy; {year} Nstudio - Natalia Osipa-Indycka. Wszelkie prawa zastrzeżone.
+  </Container>
+</footer>
