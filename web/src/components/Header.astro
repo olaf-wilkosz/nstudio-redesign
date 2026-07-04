@@ -22,7 +22,11 @@ const currentPath = Astro.url.pathname;
   id="site-header"
   class:list={['at-top', initialTheme === 'dark' ? 'theme-dark' : 'theme-light']}
 >
-  <div class="header-inner">
+  <!-- Purely decorative backdrop - animates between a flush full-width bar and a
+       floating content-width pill. The actual logo/nav row below never moves. -->
+  <div class="header-bg"></div>
+
+  <div class="header-row">
     <a href="/" class="logo-wrap" aria-label="Nstudio - strona główna">
       <img src="/logo/nstudio-logo-white.png" alt="" class="logo-white" />
       <img src="/logo/nstudio-logo-black.png" alt="Nstudio" class="logo-black" />
@@ -36,61 +40,87 @@ const currentPath = Astro.url.pathname;
         ))
       }
     </nav>
+    <button id="menu-toggle" class="menu-toggle flex md:hidden" aria-label="Otwórz menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </div>
 </header>
+
+<div id="mobile-menu" class="mobile-menu">
+  <nav class="mobile-menu-nav">
+    {
+      NAV.map((item) => (
+        <a href={item.href} class:list={['mobile-nav-link', { active: currentPath === item.href }]}>
+          {item.label}
+        </a>
+      ))
+    }
+  </nav>
+</div>
 
 <style>
   #site-header {
     position: fixed;
     inset-inline: 0;
     top: 0;
-    z-index: 50;
+    /* Above .mobile-menu (60) so the toggle button stays visible/clickable
+       (as an X) once the full-screen mobile nav is open. */
+    z-index: 70;
   }
 
-  .header-inner {
+  .header-bg {
+    position: absolute;
+    inset: 0;
     margin-inline: auto;
-    margin-top: 0.75rem;
-    max-width: calc(72rem - 1.5rem);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.6rem 1.5rem;
-    border-radius: 9999px;
-    backdrop-filter: blur(14px);
+    max-width: 100%;
+    border-radius: 0;
     transition:
       margin 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-      padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
       max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
       border-radius 0.4s ease,
       background-color 0.4s ease,
       box-shadow 0.4s ease;
   }
 
-  /* Flush, edge-to-edge bar right at the top of the page; detaches into a floating,
-     content-width pill on first scroll. */
-  #site-header.at-top .header-inner {
-    margin-top: 0;
-    max-width: 100%;
-    padding: 1.75rem 1.5rem;
-    border-radius: 0;
+  /* Detaches into a floating, content-width pill once scrolled past the top. */
+  #site-header:not(.at-top) .header-bg {
+    inset: 0.75rem 0;
+    max-width: calc(72rem - 1.5rem);
+    border-radius: 9999px;
+    backdrop-filter: blur(14px);
   }
 
-  #site-header.theme-dark .header-inner {
+  #site-header.theme-dark:not(.at-top) .header-bg {
     background-color: rgba(29, 29, 29, 0.55);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
   }
 
-  #site-header.theme-light .header-inner {
+  #site-header.theme-light:not(.at-top) .header-bg {
     background-color: rgba(245, 241, 236, 0.8);
     box-shadow: 0 10px 40px rgba(29, 29, 29, 0.08);
   }
 
-  /* At the very top over a dark hero, melt into it with a downward scrim instead
-     of a hard-edged frosted bar - reads as part of the hero, not a rectangle on top of it. */
-  #site-header.at-top.theme-dark .header-inner {
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0));
-    backdrop-filter: none;
+  /* At the very top there is no backdrop at all - the header blends directly
+     into whatever section (hero or page banner) sits beneath it. */
+  #site-header.at-top .header-bg {
+    background: transparent;
     box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  /* The actual content row is always laid out at a constant content width -
+     only the decorative .header-bg behind it changes shape/position. */
+  .header-row {
+    position: relative;
+    z-index: 1;
+    margin-inline: auto;
+    max-width: 72rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
   }
 
   .logo-wrap {
@@ -154,6 +184,88 @@ const currentPath = Astro.url.pathname;
   #site-header.theme-light .nav-link.active {
     color: rgb(29, 29, 29);
   }
+
+  /* Hamburger - display (flex/hidden per breakpoint) comes from Tailwind
+     classes on the element itself; this block only handles layout/cosmetics
+     so it never fights the responsive show/hide utility. */
+  .menu-toggle {
+    position: relative;
+    height: 2.75rem;
+    width: 2.75rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+  }
+
+  .menu-toggle span {
+    display: block;
+    height: 1px;
+    width: 1.4rem;
+    background: rgba(245, 241, 236, 0.9);
+    transition:
+      background-color 0.3s ease,
+      transform 0.3s ease,
+      opacity 0.3s ease;
+  }
+
+  #site-header.theme-light .menu-toggle span {
+    background: rgba(29, 29, 29, 0.85);
+  }
+
+  /* Once the mobile menu is open, the toggle sits on top of the dark overlay
+     (see z-index note above) - force it cream regardless of page theme, and
+     morph the three bars into an X. */
+  #site-header.menu-open .menu-toggle span {
+    background: var(--color-cream);
+  }
+
+  #site-header.menu-open .menu-toggle span:nth-child(1) {
+    transform: translateY(0.36rem) rotate(45deg);
+  }
+
+  #site-header.menu-open .menu-toggle span:nth-child(2) {
+    opacity: 0;
+  }
+
+  #site-header.menu-open .menu-toggle span:nth-child(3) {
+    transform: translateY(-0.36rem) rotate(-45deg);
+  }
+
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-ink);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+
+  .mobile-menu.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-menu-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.75rem;
+  }
+
+  .mobile-nav-link {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    color: rgba(245, 241, 236, 0.85);
+  }
+
+  .mobile-nav-link.active {
+    color: var(--color-cream);
+  }
 </style>
 
 <script>
@@ -162,7 +274,6 @@ const currentPath = Astro.url.pathname;
     if (!header) return;
 
     const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-theme]'));
-    if (sections.length === 0) return;
 
     // Sample point just below the header's vertical center - whichever section
     // currently sits behind it decides the header's light/dark theme.
@@ -197,8 +308,32 @@ const currentPath = Astro.url.pathname;
       { passive: true }
     );
 
-    update();
+    if (sections.length > 0) update();
+  }
+
+  function setupMobileMenu() {
+    const header = document.getElementById('site-header');
+    const toggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+    if (!header || !toggle || !menu) return;
+
+    function setOpen(open: boolean) {
+      menu!.classList.toggle('open', open);
+      header!.classList.toggle('menu-open', open);
+      toggle!.setAttribute('aria-expanded', String(open));
+      toggle!.setAttribute('aria-label', open ? 'Zamknij menu' : 'Otwórz menu');
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+
+    toggle.addEventListener('click', () => {
+      setOpen(!menu!.classList.contains('open'));
+    });
+    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    });
   }
 
   setupHeader();
+  setupMobileMenu();
 </script>

@@ -33,7 +33,7 @@ const filters = [
         {
           filters.map((f) => (
             <button
-              class="filter-btn border border-ink/15 px-4 py-2 text-xs tracking-[0.1em] text-body uppercase transition-colors data-[active=true]:border-ink data-[active=true]:bg-ink data-[active=true]:text-cream"
+              class="filter-btn border border-ink/15 px-4 py-2 text-xs tracking-[0.1em] text-body uppercase transition-all duration-300 hover:border-ink hover:bg-ink/5 data-[active=true]:border-ink data-[active=true]:bg-ink data-[active=true]:text-cream"
               data-filter={f.value}
               data-active={f.value === 'wszystkie'}
             >

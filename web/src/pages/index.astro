@@ -10,7 +10,12 @@ import { getRealizacje, getUstawienia } from '../lib/strapi';
 
 const realizacje = await getRealizacje();
 const ustawienia = await getUstawienia();
-const featured = realizacje.slice(0, 10);
+// The carousel needs a healthy surplus of slides over slidesPerView (up to
+// 4.2 on wide screens) for Swiper's loop mode to work reliably - too few
+// slides relative to slidesPerView makes loop silently disable itself
+// (see Swiper's "not enough slides for loop mode" warning). Using the full
+// portfolio here comfortably clears that bar.
+const featured = realizacje;
 
 const oferta = [
   {
