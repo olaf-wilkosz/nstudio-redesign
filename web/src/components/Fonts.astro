@@ -1,0 +1,39 @@
+---
+// Self-hosted Heebo/Playfair Display, mirrored 1:1 from Google's own css2
+// response (see web/src/data/fonts.json) rather than hand-rolled subsets -
+// this keeps Google's correct latin-ext unicode-range so Polish diacritics
+// stay safe, while dropping the hebrew/cyrillic/vietnamese/greek/math/symbols
+// subsets Google also ships (unneeded here, and previously downloaded on
+// every visit as part of the single combined stylesheet request).
+//
+// Serves the files same-origin instead of fonts.googleapis.com/fonts.gstatic.com:
+// no extra DNS/TLS handshakes, and the @font-face rules ship inline with the
+// page's own CSS instead of behind a second render-blocking stylesheet fetch.
+import { withBase } from '../lib/url';
+import fonts from '../data/fonts.json';
+
+const fontFaceCSS = fonts
+  .map(
+    (f) => `@font-face {
+  font-family: '${f.family}';
+  font-style: ${f.style};
+  font-weight: ${f.weight};
+  font-display: swap;
+  src: url('${withBase(`/fonts/${f.filename}`)}') format('woff2');
+  unicode-range: ${f.unicodeRange};
+}`
+  )
+  .join('\n');
+
+// Preload the body-text weight (400, latin + latin-ext) since it's used on
+// every page immediately; other weights/subsets load as the browser's font
+// matching needs them.
+const preloadFiles = fonts
+  .filter((f) => f.family === 'Heebo' && f.weight === 400)
+  .map((f) => f.filename);
+---
+
+{preloadFiles.map((file) => (
+  <link rel="preload" as="font" type="font/woff2" href={withBase(`/fonts/${file}`)} crossorigin />
+))}
+<style set:html={fontFaceCSS} />
