@@ -103,8 +103,34 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deploy1.outputs.page_url || steps.deploy2.outputs.page_url || steps.deploy3.outputs.page_url }}
     steps:
-      - name: Wdroz na GitHub Pages
-        id: deployment
+      # actions/deploy-pages intermittently fails with a generic "Deployment
+      # failed, try again later" from GitHub's own Pages backend (hit this
+      # three times during development, unrelated to anything in this repo -
+      # a plain re-run always succeeded). The action has no built-in retry,
+      # so cascade up to 3 attempts here instead of relying on a human to
+      # notice and manually re-run the workflow.
+      - name: Wdroz na GitHub Pages (proba 1)
+        id: deploy1
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+
+      - name: Czekaj przed retry 1
+        if: steps.deploy1.outcome == 'failure'
+        run: sleep 15
+
+      - name: Wdroz na GitHub Pages (proba 2)
+        id: deploy2
+        if: steps.deploy1.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+
+      - name: Czekaj przed retry 2
+        if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
+        run: sleep 30
+
+      - name: Wdroz na GitHub Pages (proba 3, ostatnia)
+        id: deploy3
+        if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
         uses: actions/deploy-pages@v4
