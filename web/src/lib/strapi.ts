@@ -9,6 +9,8 @@ interface StrapiMediaFormat {
   url: string;
   width: number;
   height: number;
+  /** KB, per Strapi's convention - used to guard against the format being larger than the original (see strapiImageSrc). */
+  size: number;
 }
 
 export interface StrapiMedia {
@@ -17,6 +19,8 @@ export interface StrapiMedia {
   alternativeText: string | null;
   width: number;
   height: number;
+  /** KB */
+  size: number;
   formats: {
     thumbnail?: StrapiMediaFormat;
     small?: StrapiMediaFormat;
@@ -114,12 +118,21 @@ const FALLBACK_ORDER: Record<Exclude<ImageSize, 'original'>, Array<keyof NonNull
  * (e.g. a 2000px original at ~320KB vs. its 750px "medium" at ~58KB for a
  * card displayed at ~535px). Falls back to the original if no formats exist
  * (e.g. the source image was already smaller than every breakpoint).
+ *
+ * Guards against a real pathology found via Lighthouse: for flat-color
+ * line-art PNGs (floor plans, technical drawings), Strapi's resized variant
+ * can end up *larger* than the original despite smaller pixel dimensions
+ * (PNG compression is very content-sensitive) - e.g. a 766x542 original at
+ * 93KB whose "medium" resize came out at 467KB. Always use whichever is
+ * smaller in actual bytes.
  */
 export function strapiImageSrc(media: StrapiMedia, size: ImageSize = 'medium'): string {
   if (size !== 'original' && media.formats) {
     for (const candidate of FALLBACK_ORDER[size]) {
       const fmt = media.formats[candidate];
-      if (fmt) return strapiMediaUrl(fmt.url);
+      if (fmt) {
+        return fmt.size < media.size ? strapiMediaUrl(fmt.url) : strapiMediaUrl(media.url);
+      }
     }
   }
   return strapiMediaUrl(media.url);
