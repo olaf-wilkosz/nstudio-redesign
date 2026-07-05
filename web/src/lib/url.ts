@@ -9,5 +9,6 @@ export function withBase(path: string): string {
   const base = import.meta.env.BASE_URL;
   const normalizedBase = base.endsWith('/') ? base.slice(0, -1) : base;
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  if (normalizedBase && normalizedPath.startsWith(`${normalizedBase}/`)) return normalizedPath; // already based - don't double-prefix (e.g. strapiImageSrc() output passed through again as an ogImage prop)
   return `${normalizedBase}${normalizedPath}`;
 }

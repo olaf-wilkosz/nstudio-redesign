@@ -3,9 +3,16 @@
 // must not depend on Strapi still running anywhere (it doesn't in this PoC;
 // Strapi only runs long enough to serve the SSG build, see krok 7 / the GH
 // Actions workflow). Runs automatically before `astro build` (prebuild hook).
+//
+// Also generates a .webp sibling for every jpg/png (Strapi's own formats
+// included) - WebP beats both at equivalent quality, and doing it here means
+// Strapi's DB/API keep plain jpg/png (no changes to seed data or the admin
+// UI), while strapiMediaUrl() swaps the extension only for the deployed
+// static site (see web/src/lib/strapi.ts).
 import { existsSync, mkdirSync, readdirSync, copyFileSync, statSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import sharp from 'sharp';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const source = join(__dirname, '../../cms/public/uploads');
@@ -18,13 +25,27 @@ if (!existsSync(source)) {
 
 mkdirSync(dest, { recursive: true });
 
-let count = 0;
+const RASTER_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png']);
+
+let copied = 0;
+let converted = 0;
 for (const entry of readdirSync(source)) {
   const src = join(source, entry);
-  if (statSync(src).isFile()) {
-    copyFileSync(src, join(dest, entry));
-    count++;
+  if (!statSync(src).isFile()) continue;
+
+  copyFileSync(src, join(dest, entry));
+  copied++;
+
+  const ext = extname(entry).toLowerCase();
+  if (!RASTER_EXTENSIONS.has(ext)) continue;
+
+  const webpName = entry.slice(0, -ext.length) + '.webp';
+  try {
+    await sharp(src).webp({ quality: 82 }).toFile(join(dest, webpName));
+    converted++;
+  } catch (err) {
+    console.warn(`[sync-uploads] failed to convert ${entry} to webp: ${err.message}`);
   }
 }
 
-console.log(`[sync-uploads] copied ${count} file(s) from cms/public/uploads to web/public/uploads`);
+console.log(`[sync-uploads] copied ${copied} file(s), converted ${converted} to webp`);

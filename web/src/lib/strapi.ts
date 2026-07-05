@@ -90,13 +90,17 @@ async function strapiFetch<T>(path: string): Promise<T> {
  * Resolves a Strapi media `url`. In production builds, Strapi's uploaded
  * files are copied into web/public/uploads (see scripts/sync-uploads.mjs,
  * wired as a "prebuild" step) so the deployed static site never depends on
- * Strapi still running - this returns a same-origin path for those. In dev
+ * Strapi still running - this returns a same-origin path for those, swapped
+ * to the .webp sibling the sync script generates alongside every jpg/png
+ * (smaller than either at equivalent quality - see sync-uploads.mjs). In dev
  * mode it points straight at the live local Strapi instance for fast
- * iteration without needing to re-sync files on every change.
+ * iteration without needing to re-sync files on every change, serving the
+ * original jpg/png since no webp conversion happens there.
  */
 export function strapiMediaUrl(url: string): string {
   if (url.startsWith('http')) return url;
-  return import.meta.env.PROD ? withBase(url) : `${STRAPI_URL}${url}`;
+  if (!import.meta.env.PROD) return `${STRAPI_URL}${url}`;
+  return withBase(url.replace(/\.(jpe?g|png)$/i, '.webp'));
 }
 
 type ImageSize = 'thumbnail' | 'small' | 'medium' | 'large' | 'original';
