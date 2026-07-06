@@ -87,10 +87,14 @@ const currentPath = Astro.url.pathname;
       box-shadow 0.4s ease;
   }
 
-  /* Detaches into a floating, content-width pill once scrolled past the top. */
+  /* Detaches into a floating, content-width pill once scrolled past the top.
+     max-width matches .header-row's exactly (not narrower) - a mismatch here
+     used to leave the row's own edge padding as the only clearance from the
+     pill's rounded corners, which broke once the logo grew (its box sat
+     inside the corner's curve and visually poked past the pill). */
   #site-header:not(.at-top) .header-bg {
     inset: 0.75rem 0;
-    max-width: calc(72rem - 1.5rem);
+    max-width: 72rem;
     border-radius: 9999px;
     backdrop-filter: blur(14px);
   }
