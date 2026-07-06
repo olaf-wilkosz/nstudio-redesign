@@ -1,0 +1,93 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Container from '../../components/Container.astro';
+import Button from '../../components/Button.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { getUstawienia } from '../../lib/strapi';
+import { withBase } from '../../lib/url';
+
+const ustawienia = await getUstawienia();
+
+const zakresUslug = [
+  'Meble kuchenne',
+  'Garderoby i szafy wielofunkcyjne',
+  'Meble łazienkowe',
+  'Zabudowy wnęk i szaf',
+  'Meble biurowe',
+  'Wyposażenie apartamentów (np. na wynajem)',
+];
+---
+
+<Layout
+  title="Meble na wymiar"
+  description="Meble na wymiar Rzeszów - producent mebli do kuchni, sypialni, salonu i przestrzeni komercyjnych. Nstudio."
+>
+  <Header />
+
+  <PageHeader
+    eyebrow="Meble na wymiar"
+    title="Meble na wymiar Rzeszów"
+    subtitle="Projektujemy i wykonujemy meble dopasowane co do centymetra - do kuchni, sypialni, salonu i przestrzeni komercyjnych."
+  />
+
+  <section data-theme="light" class="bg-white py-20">
+    <Container class="grid items-center gap-14 md:grid-cols-2">
+      <img
+        src={withBase('/images/meble-na-wymiar/kuchnia-na-wymiar.jpg')}
+        alt="Kuchnia na wymiar zrealizowana przez Nstudio"
+        class="aspect-[4/3] w-full object-cover"
+      />
+      <div>
+        <h2 class="font-serif text-2xl text-ink md:text-3xl">Producent, nie pośrednik</h2>
+        <p class="mt-4 text-body/90">
+          Sami produkujemy meble na wymiar dla klientów z Rzeszowa i okolic - stawiamy na jakość
+          materiałów i rzemiosła oraz pełną przejrzystość kosztów i etapów realizacji. Meble szyte
+          na miarę eliminują problem niedopasowania standardowych mebli sklepowych do konkretnej
+          przestrzeni.
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <section data-theme="light" class="bg-cream py-20">
+    <Container>
+      <h2 class="font-serif text-2xl text-ink md:text-3xl">Zakres usług</h2>
+      <ul class="mt-8 grid grid-cols-1 gap-x-6 gap-y-4 text-body/90 sm:grid-cols-2 md:grid-cols-3">
+        {
+          zakresUslug.map((usluga) => (
+            <li class="flex gap-2">
+              <span class="text-primary-dark">·</span>
+              <span>{usluga}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </Container>
+  </section>
+
+  <section data-theme="light" class="bg-white py-20">
+    <Container class="max-w-2xl text-center">
+      <h2 class="font-serif text-2xl text-ink md:text-3xl">Porozmawiajmy o Twoich meblach</h2>
+      {ustawienia.telefonMeble && (
+        <a
+          href={`tel:${ustawienia.telefonMeble.replace(/\s/g, '')}`}
+          class="mt-5 block font-serif text-2xl text-ink hover:text-primary-dark"
+        >
+          {ustawienia.telefonMeble}
+        </a>
+      )}
+      {ustawienia.emailMeble && (
+        <a href={`mailto:${ustawienia.emailMeble}`} class="text-body/80 hover:text-ink">
+          {ustawienia.emailMeble}
+        </a>
+      )}
+      <div class="mt-8">
+        <Button href={withBase('/kontakt/')} variant="outline-dark">Zapytaj o wycenę</Button>
+      </div>
+    </Container>
+  </section>
+
+  <Footer ustawienia={ustawienia} />
+</Layout>

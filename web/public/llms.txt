@@ -12,6 +12,7 @@ zrealizowanymi projektami wnętrz od 5 lat na rynku.
 - [O mnie](https://olaf-wilkosz.github.io/nstudio-redesign/o-mnie/): bio Natalii Osipy-Indyckiej, doświadczenie
 - [Portfolio](https://olaf-wilkosz.github.io/nstudio-redesign/portfolio/): pełne portfolio realizacji z podziałem na mieszkania, domy, komercyjne
 - [Oferta](https://olaf-wilkosz.github.io/nstudio-redesign/oferta/): trzy pakiety współpracy (projekt kompleksowy, z nadzorem, pod klucz)
+- [Meble na wymiar](https://olaf-wilkosz.github.io/nstudio-redesign/meble-na-wymiar/): producent mebli na wymiar - kuchenne, łazienkowe, biurowe, zabudowy
 - [Blog](https://olaf-wilkosz.github.io/nstudio-redesign/blog/): artykuły o projektowaniu wnętrz
 - [Kontakt](https://olaf-wilkosz.github.io/nstudio-redesign/kontakt/): dane kontaktowe, lokalizacja biura
 
