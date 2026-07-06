@@ -9,6 +9,41 @@ import { getUstawienia } from '../../lib/strapi';
 import { withBase } from '../../lib/url';
 
 const ustawienia = await getUstawienia();
+
+const korzysci = [
+  {
+    tytul: 'Oszczędność czasu',
+    opis: 'Przejmuję poszukiwanie materiałów, dostawców i koordynację zamówień.',
+  },
+  {
+    tytul: 'Pełne wsparcie projektanta',
+    opis: 'Indywidualnie dopasowany, spersonalizowany projekt.',
+  },
+  {
+    tytul: 'Dostęp do ekskluzywnych materiałów',
+    opis: 'Materiały niedostępne w standardowej sprzedaży detalicznej.',
+  },
+  {
+    tytul: 'Oszczędność pieniędzy',
+    opis: 'Lepsze ceny dzięki znajomości rynku i dostawców.',
+  },
+  {
+    tytul: 'Harmonijne i funkcjonalne wnętrze',
+    opis: 'Równowaga między estetyką a ergonomią.',
+  },
+  {
+    tytul: 'Rozsądne planowanie budżetu',
+    opis: 'Realistyczny budżet ustalany na starcie współpracy.',
+  },
+  {
+    tytul: 'Profesjonalne zarządzanie projektem',
+    opis: 'Koordynacja specjalistów i wykonawców.',
+  },
+  {
+    tytul: 'Wzrost wartości nieruchomości',
+    opis: 'Profesjonalny projekt podnosi wartość mieszkania lub domu.',
+  },
+];
 ---
 
 <Layout
@@ -72,6 +107,29 @@ const ustawienia = await getUstawienia();
         <p class="mt-2 text-sm text-muted">
           etapy współpracy - projektant, wykonawca, meble na wymiar
         </p>
+      </div>
+    </Container>
+  </section>
+
+  <section data-theme="light" class="py-20">
+    <Container>
+      <h2 class="font-serif text-2xl text-ink md:text-3xl">Współpraca z Nstudio</h2>
+      <div class="mt-10 grid gap-x-8 gap-y-8 md:grid-cols-3">
+        {
+          korzysci.map((k) => (
+            <div>
+              <h3 class="text-sm font-medium tracking-[0.02em] text-ink">{k.tytul}</h3>
+              <p class="mt-2 text-sm text-muted">{k.opis}</p>
+            </div>
+          ))
+        }
+        <div>
+          <h3 class="text-sm font-medium tracking-[0.02em] text-ink">Meble na wymiar</h3>
+          <p class="mt-2 text-sm text-muted">
+            Ok. 90% klientów korzysta też z naszej stolarni na wymiar - dla pewności perfekcyjnego
+            dopasowania. <a href={withBase('/meble-na-wymiar/')} class="text-ink underline underline-offset-4 hover:text-primary-dark">Zobacz ofertę →</a>
+          </p>
+        </div>
       </div>
     </Container>
   </section>
