@@ -128,9 +128,16 @@ const currentPath = Astro.url.pathname;
   .logo-wrap {
     position: relative;
     display: block;
-    height: 3rem;
-    width: 3rem;
+    height: 3.75rem;
+    width: 3.75rem;
     flex-shrink: 0;
+  }
+
+  @media (min-width: 768px) {
+    .logo-wrap {
+      height: 5.5rem;
+      width: 5.5rem;
+    }
   }
 
   .logo-wrap img {
