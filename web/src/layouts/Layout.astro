@@ -30,8 +30,13 @@ const pageTitle = `${title} · Nstudio`;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href={withBase('/favicon.ico')} sizes="any" />
-    <link rel="icon" type="image/png" sizes="32x32" href={withBase('/favicon-32x32.png')} />
-    <link rel="icon" type="image/png" sizes="16x16" href={withBase('/favicon-16x16.png')} />
+    <!-- Czarny monogram na przezroczystym tle znika w ciemnych paskach kart/
+         zakladek przegladarki - osobny bialy wariant dla prefers-color-scheme:
+         dark, oba jako type=image/png + media, wspierane przez Chrome/Firefox. -->
+    <link rel="icon" type="image/png" sizes="32x32" media="(prefers-color-scheme: light)" href={withBase('/favicon-32x32.png')} />
+    <link rel="icon" type="image/png" sizes="16x16" media="(prefers-color-scheme: light)" href={withBase('/favicon-16x16.png')} />
+    <link rel="icon" type="image/png" sizes="32x32" media="(prefers-color-scheme: dark)" href={withBase('/favicon-32x32-dark.png')} />
+    <link rel="icon" type="image/png" sizes="16x16" media="(prefers-color-scheme: dark)" href={withBase('/favicon-16x16-dark.png')} />
     <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
     <meta name="generator" content={Astro.generator} />
 
