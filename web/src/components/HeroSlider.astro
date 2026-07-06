@@ -1,0 +1,93 @@
+---
+// Crossfading slideshow of real realizacje instead of one static Hero photo -
+// still just one dominant visual at a time (no layout/CLS impact), a bit more
+// alive without adding a JS framework: plain <img> stack + a tiny inline
+// script toggling an "is-active" class, no client:* island needed.
+//
+// Only the first slide loads eagerly (it's the LCP candidate) - the other
+// three attach their real `src` after the window "load" event so they never
+// compete with initial paint, then get swapped in well before their turn.
+import { withBase } from '../lib/url';
+
+interface Slide {
+  src: string;
+  alt: string;
+}
+
+const SLIDES: Slide[] = [
+  {
+    src: '/images/hero/wnetrze-hero.webp',
+    alt: 'Wnętrze zaprojektowane przez pracownię Nstudio - łazienka w czerni i drewnie',
+  },
+  {
+    src: '/images/hero/salon-kominek.webp',
+    alt: 'Salon z kominkiem zaprojektowany przez pracownię Nstudio',
+  },
+  {
+    src: '/images/hero/modern-luxury.webp',
+    alt: 'Strefa telewizyjna z marmurową okładziną - realizacja Nstudio',
+  },
+  {
+    src: '/images/hero/jadalnia-skandynawska.webp',
+    alt: 'Jadalnia w stylu skandynawskim - realizacja Nstudio',
+  },
+];
+---
+
+<div class="absolute inset-0 h-full w-full">
+  {
+    SLIDES.map((slide, i) => (
+      <img
+        src={i === 0 ? withBase(slide.src) : undefined}
+        data-src={withBase(slide.src)}
+        alt={slide.alt}
+        class:list={['hero-slide absolute inset-0 h-full w-full object-cover', { 'is-active': i === 0 }]}
+        loading={i === 0 ? 'eager' : 'lazy'}
+        fetchpriority={i === 0 ? 'high' : 'low'}
+      />
+    ))
+  }
+</div>
+
+<style>
+  .hero-slide {
+    opacity: 0;
+    transition: opacity 1.8s ease;
+  }
+
+  .hero-slide.is-active {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  const slides = document.querySelectorAll<HTMLImageElement>('.hero-slide');
+
+  window.addEventListener('load', () => {
+    for (const img of slides) {
+      if (!img.getAttribute('src') && img.dataset.src) img.src = img.dataset.src;
+    }
+  });
+
+  if (slides.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let current = 0;
+    let timer: number;
+
+    function next() {
+      slides[current].classList.remove('is-active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('is-active');
+    }
+
+    function start() {
+      timer = window.setInterval(next, 6000);
+    }
+
+    function stop() {
+      window.clearInterval(timer);
+    }
+
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+    start();
+  }
+</script>

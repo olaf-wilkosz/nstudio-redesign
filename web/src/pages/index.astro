@@ -6,6 +6,7 @@ import Container from '../components/Container.astro';
 import Button from '../components/Button.astro';
 import RealizacjeCarousel from '../components/RealizacjeCarousel.astro';
 import Hero3DPlaceholder from '../components/Hero3DPlaceholder.astro';
+import HeroSlider from '../components/HeroSlider.astro';
 import { getRealizacje, getUstawienia } from '../lib/strapi';
 import { withBase } from '../lib/url';
 
@@ -41,20 +42,17 @@ const oferta = [
   <Header initialTheme="dark" />
 
   <!--
-    HERO - prawdziwe zdjęcie realizacji jako dominujący wizual (nie generyczny
-    abstrakcyjny background), żeby Hero od razu czytało się jako portfolio
-    projektanta wnętrz. Shader WebGL (Hero3DPlaceholder.astro, client:visible)
-    zredukowany do roli akcentu - ciepła, reagująca na kursor poświata w prawej
-    połowie sekcji (mix-blend-mode: screen + rozmycie), zamiast całego tła.
-    Docelowy punkt rozbudowy do pełnej sceny 3D (Three.js) - patrz komentarz
-    w Hero3DPlaceholder.astro, ten sam wrapper będzie miał zastosowanie.
+    HERO - prawdziwe zdjęcia realizacji (crossfade slider, HeroSlider.astro)
+    jako dominujący wizual (nie generyczny abstrakcyjny background), żeby Hero
+    od razu czytało się jako portfolio projektanta wnętrz. Shader WebGL
+    (Hero3DPlaceholder.astro, client:visible) zredukowany do roli akcentu -
+    ciepła, reagująca na kursor poświata w prawej połowie sekcji
+    (mix-blend-mode: screen + rozmycie), zamiast całego tła. Docelowy punkt
+    rozbudowy do pełnej sceny 3D (Three.js) - patrz komentarz w
+    Hero3DPlaceholder.astro, ten sam wrapper będzie miał zastosowanie.
   -->
   <section data-theme="dark" class="relative flex min-h-screen items-end overflow-hidden bg-ink">
-    <img
-      src={withBase('/images/hero/wnetrze-hero.webp')}
-      alt="Wnętrze zaprojektowane przez pracownię Nstudio - łazienka w czerni i drewnie"
-      class="absolute inset-0 h-full w-full object-cover"
-    />
+    <HeroSlider />
     <div
       class="absolute inset-0"
       style="background: linear-gradient(to top, rgba(29,29,29,0.93) 0%, rgba(29,29,29,0.6) 42%, rgba(29,29,29,0.2) 100%), linear-gradient(to right, rgba(29,29,29,0.6) 0%, rgba(29,29,29,0.1) 55%);"
