@@ -37,6 +37,20 @@ Motto zawodowe: "Wierzę, że wnętrze jest odzwierciedleniem duszy mieszkańcó
 - Zdjęcie profilowe Natalii: `https://nstudio.pl/wp-content/uploads/2022/11/DSC08049-Editiii_1664633410-1024x1024.png` — alt: "Natalia Osipa-Indycka, projektant wnętrz" (pobrane do `images/o-mnie/`)
 - Logo header/stopka (jak na wszystkich stronach)
 
+## Sekcja "Coś o naszym studio" (pominięta w pierwszym przebiegu scrapowania)
+
+Pierwszy przebieg błędnie zakwalifikował tę sekcję jako duplikat "Współpraca z Nstudio" i jej nie zapisał. To osobna, unikalna treść (nie powtarza się na innych stronach) — użytkownik namierzył ten brak przy porównaniu z żywą stroną. Treść (niemal dosłownie, drobne poprawki interpunkcji/wielkości liter Ty/Wy):
+
+"To miejsce, gdzie powstają projekty Waszych wnętrz, we współpracy ze zdolnymi projektantami, którzy kochają to, co robią. Zawsze zależy nam na dopasowaniu się do Was, oferując coś więcej. Ułatwiając podejmowanie decyzji i stwarzając mnóstwo wizualizacji wnętrz, schematów, rysunków technicznych i wykonawczych.
+
+Ale nasze studio to nie tylko projektanci, ale również siatka zaufanych fachowców i wykonawców.
+
+Na potrzeby naszych klientów cały czas się rozwijamy, by świadczyć kompleksowe usługi. Decydując się na projekt wnętrz, otrzymujesz w pełni profesjonalny projekt, wykonawcę i meblarza oraz oferty z rabatami. Co ułatwia zorganizowanie wyczynowego przedsięwzięcia, jakim jest remont.
+
+Każdy z nas ma zadanie spełnić Wasze oczekiwania i to mocne nastawienie właśnie na Wasze potrzeby nas wyróżnia. Więc nie zastanawiaj się już więcej i zadzwoń!"
+
+Obok tej sekcji na oryginalnej stronie znajduje się też slideshow zdjęć (konkretne obrazy niezidentyfikowane przez scraper — w redesignie użyto trzech zdjęć realizacji jeszcze niewykorzystanych gdzie indziej na stronie, jako reprezentatywna zajawka portfolio zamiast próby odtworzenia dokładnie tych samych kadrów).
+
 ## Uwaga o treści
 
-To jedna z niewielu stron z prawdziwie unikalną, niepowtarzalną treścią (bio właścicielki). Reszta strony (sekcja "Współpraca z Nstudio") w dużej mierze powiela te same punkty korzyści, co strona główna i oferta — patrz `13-content-audit-notes.md`.
+To jedna z niewielu stron z prawdziwie unikalną, niepowtarzalną treścią (bio właścicielki + sekcja "Coś o naszym studio" powyżej). Sekcja "Współpraca z Nstudio" w dużej mierze powiela te same punkty korzyści, co strona główna i oferta — patrz `13-content-audit-notes.md`.

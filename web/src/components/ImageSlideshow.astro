@@ -1,0 +1,59 @@
+---
+// Lightweight crossfade slideshow - same plain <img> stack + tiny inline
+// script pattern as HeroSlider.astro, but simplified for below-the-fold use:
+// no eager/lazy split for LCP since this never renders above the fold.
+import { withBase } from '../lib/url';
+
+interface Slide {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  slides: Slide[];
+  intervalMs?: number;
+  class?: string;
+}
+
+const { slides, intervalMs = 5000, class: className } = Astro.props;
+---
+
+<div class:list={['relative overflow-hidden', className]} data-interval={intervalMs}>
+  {
+    slides.map((slide, i) => (
+      <img
+        src={withBase(slide.src)}
+        alt={slide.alt}
+        loading="lazy"
+        class:list={['slideshow-img absolute inset-0 h-full w-full object-cover', { 'is-active': i === 0 }]}
+      />
+    ))
+  }
+</div>
+
+<style>
+  .slideshow-img {
+    opacity: 0;
+    transition: opacity 1.8s ease;
+  }
+
+  .slideshow-img.is-active {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-interval]').forEach((container) => {
+    const imgs = container.querySelectorAll<HTMLImageElement>('.slideshow-img');
+    if (imgs.length <= 1 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const ms = Number(container.dataset.interval) || 5000;
+    let current = 0;
+
+    setInterval(() => {
+      imgs[current].classList.remove('is-active');
+      current = (current + 1) % imgs.length;
+      imgs[current].classList.add('is-active');
+    }, ms);
+  });
+</script>

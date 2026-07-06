@@ -5,10 +5,17 @@ import Footer from '../../components/Footer.astro';
 import Container from '../../components/Container.astro';
 import Button from '../../components/Button.astro';
 import PageHeader from '../../components/PageHeader.astro';
+import ImageSlideshow from '../../components/ImageSlideshow.astro';
 import { getUstawienia } from '../../lib/strapi';
 import { withBase } from '../../lib/url';
 
 const ustawienia = await getUstawienia();
+
+const studioSlajdy = [
+  { src: '/images/o-mnie/slajd-1.webp', alt: 'Łazienka zaprojektowana przez pracownię Nstudio - róż i marmur' },
+  { src: '/images/o-mnie/slajd-2.webp', alt: 'Sypialnia w stylu loftowym - realizacja Nstudio' },
+  { src: '/images/o-mnie/slajd-3.webp', alt: 'Przedpokój zaprojektowany przez pracownię Nstudio' },
+];
 
 const korzysci = [
   {
@@ -130,6 +137,37 @@ const korzysci = [
             dopasowania. <a href={withBase('/meble-na-wymiar/')} class="text-ink underline underline-offset-4 hover:text-primary-dark">Zobacz ofertę →</a>
           </p>
         </div>
+      </div>
+    </Container>
+  </section>
+
+  <section data-theme="light" class="bg-white py-20">
+    <Container class="grid items-center gap-14 md:grid-cols-2">
+      <ImageSlideshow slides={studioSlajdy} class="aspect-[4/5] w-full" />
+      <div>
+        <h2 class="font-serif text-2xl text-ink md:text-3xl">Coś o naszym studio</h2>
+        <div class="mt-6 space-y-5 text-sm text-body/90">
+          <p>
+            To miejsce, gdzie powstają projekty Waszych wnętrz, we współpracy ze zdolnymi
+            projektantami, którzy kochają to, co robią. Zawsze zależy nam na dopasowaniu się do
+            Was, oferując coś więcej. Ułatwiając podejmowanie decyzji i stwarzając mnóstwo
+            wizualizacji wnętrz, schematów, rysunków technicznych i wykonawczych.
+          </p>
+          <p>Ale nasze studio to nie tylko projektanci, ale również siatka zaufanych fachowców i wykonawców.</p>
+          <p>
+            Na potrzeby naszych klientów cały czas się rozwijamy, by świadczyć kompleksowe usługi.
+            Decydując się na projekt wnętrz, otrzymujesz w pełni profesjonalny projekt, wykonawcę i
+            meblarza oraz oferty z rabatami. Co ułatwia zorganizowanie wyczynowego przedsięwzięcia,
+            jakim jest remont.
+          </p>
+          <p>
+            Każdy z nas ma zadanie spełnić Wasze oczekiwania i to mocne nastawienie właśnie na
+            Wasze potrzeby nas wyróżnia.
+          </p>
+        </div>
+        <Button href={withBase('/kontakt/')} variant="primary" class="mt-8">
+          Nie zastanawiaj się dłużej i zadzwoń
+        </Button>
       </div>
     </Container>
   </section>
